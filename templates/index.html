@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Chat{% endblock title %}
+{% block content %}
+    hello, {{ user }}
+    <a href="{% url 'logout' %}">Logout</a>
+    <form action="{% url 'request' %}" method="post">
+        {% csrf_token %}
+        <button type "submit">Request</button>
+    </form>
+    <form action="{% url 'respond' %}" method="post">
+        {% csrf_token %}
+        <button type "submit">Respond</button>
+    </form>
+{% endblock content %}

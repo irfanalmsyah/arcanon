@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock title %}
+{% block content %}
+    Login
+    <form action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" placeholder="Username" name="username" autocomplete="username" autocapitalize="none"  autofocus required>
+        <input type="password" placeholder="Password" name="password" autocomplete="current-password" minlength="8" required >
+        <button type="submit">Login</button>
+        No account? <a href="{% url 'register' %}">Sign Up</a>
+    </form>
+{% endblock content %}

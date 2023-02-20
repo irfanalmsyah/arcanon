@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock title %}Register
+{% block content %}
+    Register
+    <form action="{% url 'register' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" placeholder="Username" name="username" autocomplete="username" autocapitalize="none"  autofocus required>
+        <input type="password" placeholder="Password" id="password1" name="password1" autocomplete="new-password" minlength="8" required >
+        <input type="password" placeholder="Confirm Password" id="password2" name="password2" autocomplete="new-password" minlength="8" oninput=check(this) required>
+        <button type="submit">Register</button>
+        Have an account? <a href="{% url 'login' %}">Login</a>
+    </form>
+
+    <script language='javascript' type='text/javascript'>
+        function check(input) {
+            if (input.value != document.getElementById('password1').value) {
+                input.setCustomValidity('Password Must be Matching.');
+            } else {
+                // input is valid -- reset the error message
+                input.setCustomValidity('');
+            }
+        }
+    </script>
+{% endblock content %}
