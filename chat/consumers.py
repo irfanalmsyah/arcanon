@@ -28,25 +28,36 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
-        user = self.scope.get("user", None)
-        if not user or not user.is_authenticated:
-            await self.close()
-            return
-        message = await self.create_message(user, message)
-        await self.channel_layer.group_send(
-            self.room_group_name, {
-                "type": "chat_message", 
-                "message": message.message,
-                "user": message.user.username,
-                "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S")
-            }
-        )
+        try:
+            message = text_data_json["message"]
+            user = self.scope.get("user", None)
+            if not user or not user.is_authenticated:
+                await self.close()
+                return
+            message = await self.create_message(user, message)
+            await self.channel_layer.group_send(
+                self.room_group_name, {
+                    "type": "chat_message", 
+                    "message": message.message,
+                    "user": message.user.username,
+                    "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S")
+                }
+            )
+        except Exception as e:
+            await self.channel_layer.group_send(
+                self.room_group_name, {
+                    "type": "destroy"
+                }
+            )
 
     async def chat_message(self, event):
         message = event["message"]
         user = event["user"]
         await self.send(text_data=json.dumps({"message": message, "user": user}))
+
+    async def destroy(self, event):
+        await self.delete_room()
+        await self.send(text_data=json.dumps({"destroy": 1}))
 
     @database_sync_to_async
     def get_previous_messages(self):
@@ -61,3 +72,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             room=room,
             message=message
         )
+    
+    @database_sync_to_async
+    def delete_room(self):
+        room = Room.objects.get(name=self.room_name)
+        room.delete()
