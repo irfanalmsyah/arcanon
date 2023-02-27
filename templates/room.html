@@ -7,6 +7,7 @@
     {{ room_name|json_script:"room-name" }}
     {{ user.username|json_script:"user" }}
     <button onclick="disconnect()">Back to Home</button>
+    <button onclick="destroy()">End Conversation</button>
     <script>
         window.onload = function() {
             document.querySelector('#chat-log').value = 'Welcome to the chat room!\n';
@@ -23,7 +24,13 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.user + ': ' + data.message + '\n');
+            console.log(data);
+            if (data.message) {
+                document.querySelector('#chat-log').value += (data.user + ': ' + data.message + '\n');
+            } else {
+                alert("User has left the chat room");
+                disconnect();
+            }
         };
 
         chatSocket.onclose = function(e) {
@@ -50,6 +57,14 @@
         function disconnect() {
             chatSocket.close();
             window.location.href = '/';
+        }
+
+        function destroy() {
+            chatSocket.send(JSON.stringify({
+                'user': user,
+                'destroy': 1
+            }));
+            disconnect();
         }
     </script>
 {% endblock content %}
