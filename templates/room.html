@@ -6,7 +6,7 @@
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
     {{ user.username|json_script:"user" }}
-    <button onclick="disconnect()">Disconnect</button>
+    <button onclick="disconnect()">Back to Home</button>
     <script>
         window.onload = function() {
             document.querySelector('#chat-log').value = 'Welcome to the chat room!\n';
