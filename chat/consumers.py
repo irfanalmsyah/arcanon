@@ -16,12 +16,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         previous_messages = await self.get_previous_messages()
         for message in previous_messages:
-            await self.send(text_data=json.dumps({
-                "message": message.message,
-                "user": message.user.username,
-                "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S")
-            }))
-        
+            if message.user == user:
+                await self.send(text_data=json.dumps({
+                    "message": message.message, 
+                    "user": "You",
+                    "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S")
+                }))
+            else:
+                await self.send(text_data=json.dumps({
+                    "message": message.message, 
+                    "user": "Stranger",
+                    "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S")
+                }))
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
@@ -53,7 +59,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event["message"]
         user = event["user"]
-        await self.send(text_data=json.dumps({"message": message, "user": user}))
+        if user == self.scope.get("user", None).username:
+            await self.send(text_data=json.dumps({"message": message, "user": "You"}))
+        else:
+            await self.send(text_data=json.dumps({"message": message, "user": "Stranger"}))
 
     async def destroy(self, event):
         await self.delete_room()
@@ -62,7 +71,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_previous_messages(self):
         room = Room.objects.get(name=self.room_name)
-        return Message.objects.filter(room=room).order_by("-created_at")
+        return Message.objects.filter(room=room)
         
     @database_sync_to_async
     def create_message(self, user, message):
