@@ -50,6 +50,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
         except Exception as e:
+            await self.delete_room()
             await self.channel_layer.group_send(
                 self.room_group_name, {
                     "type": "destroy"
@@ -65,7 +66,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({"message": message, "user": "Stranger"}))
 
     async def destroy(self, event):
-        await self.delete_room()
         await self.send(text_data=json.dumps({"destroy": 1}))
 
     @database_sync_to_async
