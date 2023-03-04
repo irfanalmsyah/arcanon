@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from django.db.models import Sum
+from django.db.models import Q
 from django.http import Http404
 from django.utils.datastructures import MultiValueDictKeyError
 from .models import Room, Message
@@ -13,7 +13,11 @@ from .random_string import generate_random_string
 
 @login_required
 def index(request):
-    return render(request, "index.html")
+    try:
+        room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
+    except Room.DoesNotExist:
+        room = None
+    return render(request, "index.html", {"room": room})
 
 @login_required
 def room(request, room_name):

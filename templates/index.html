@@ -3,12 +3,22 @@
 {% block content %}
     hello, {{ user }}
     <a href="{% url 'logout' %}">Logout</a>
-    <form action="{% url 'request' %}" method="post">
-        {% csrf_token %}
-        <button type "submit">Request</button>
-    </form>
-    <form action="{% url 'respond' %}" method="post">
-        {% csrf_token %}
-        <button type "submit">Respond</button>
-    </form>
+    {% if room %}
+        You already has a room with a stranger as a 
+        {% if room.requester == user %}
+            requester.
+        {% else %}
+            responder.
+        {% endif %}
+        <a href="{% url 'room' room.name %}">Go to chat</a>
+    {% else %}
+        <form action="{% url 'request' %}" method="post">
+            {% csrf_token %}
+            <button type "submit">Request</button>
+        </form>
+        <form action="{% url 'respond' %}" method="post">
+            {% csrf_token %}
+            <button type "submit">Respond</button>
+        </form>
+    {% endif %}
 {% endblock content %}
