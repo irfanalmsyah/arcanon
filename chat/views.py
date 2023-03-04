@@ -25,9 +25,9 @@ def room(request, room_name):
         room = Room.objects.get(name=room_name)
     except Room.DoesNotExist:
         raise Http404("Room does not exist")
-    if not room.responder or request.user not in [room.requester, room.responder]:
+    if request.user not in [room.requester, room.responder]:
         raise Http404("You are not allowed to view this room")
-    return render(request, "room.html", {"room_name": room_name}) 
+    return render(request, "room.html", {"room": room }) 
 
 def login_view(request):
     if request.user.is_authenticated:
