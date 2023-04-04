@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from .forms import CustomUserCreationForm
 from django.db.models import Q
 from django.http import Http404
 from django.utils.datastructures import MultiValueDictKeyError
@@ -57,7 +57,7 @@ def register(request):
         return redirect('index')
     else:
         if request.method == 'POST':
-            form = UserCreationForm(request.POST)
+            form = CustomUserCreationForm(request.POST)
             if form.is_valid():
                 # Create and save a new user
                 user = form.save()
@@ -94,3 +94,7 @@ def responder(request):
         room.responder = request.user
         room.save()
         return redirect(reverse('room', kwargs={'room_name': room.name}))
+
+@login_required
+def setting(request):
+    
