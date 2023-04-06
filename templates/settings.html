@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Setting{% endblock title %}
+{% block content %}
+    hello, {{ user }}
+    <a href="{% url 'index' %}">Home</a>
+    <form action="{% url 'settings' %}" method="post">
+        {% csrf_token %}
+        Age
+        <input type="number" name="age" value="{{ user.age }}">
+        <br>
+        Gender
+        <input type="radio" name="gender" value="M" {% if user.gender == "M"%} checked {% endif %}>
+        Male
+        <input type="radio" name="gender" value="F" {% if user.gender == "F"%} checked {% endif %}>
+        Female
+        <br>
+        Chat Preferences:
+        <br>
+        <input type="checkbox" name="agePref" value="same" {% if user.age_pref == 0 or user.age_pref == 3 or user.age_pref == 4 %} checked {% endif %}>
+        Same Age
+        <input type="checkbox" name="agePref" value="older" {% if user.age_pref == 2 or user.age_pref == 4 or user.age_pref == 5 %} checked {% endif %}>
+        Older
+        <input type="checkbox" name="agePref" value="younger" {% if user.age_pref == 1 or user.age_pref == 3 or user.age_pref == 5 %} checked {% endif %}>
+        Younger
+        <br>
+        <input type="radio" name="genderPref" value="M" {% if user.gender_pref == "M"%} checked {% endif %}>
+        Male
+        <input type="radio" name="genderPref" value="F" {% if user.gender_pref == "F"%} checked {% endif %}>
+        Female
+        <input type="radio" name="genderPref" value="A" {% if user.gender_pref != "F" and user.gender_pref != "M"%} checked {% endif %}>
+        Any
+        <input type="submit" value="Save">
+    </form>
+{% endblock content %}

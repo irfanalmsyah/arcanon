@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm
 from django.db.models import Q
 from django.http import Http404
-from django.utils.datastructures import MultiValueDictKeyError
 from .models import Room, Message
 from .random_string import generate_random_string
 
@@ -96,5 +95,43 @@ def responder(request):
         return redirect(reverse('room', kwargs={'room_name': room.name}))
 
 @login_required
-def setting(request):
-    
+def settings(request):
+    if (request.method == 'POST'):
+        age = request.POST['age']
+        if age == '':
+            age = None
+        try:
+            gender = request.POST['gender']
+        except:
+            gender = None
+        
+        try:
+            age_pref_list = request.POST.getlist('agePref')
+        except:
+            age_pref_list = None
+        
+        if age_pref_list == ["same"]:
+            age_pref = 0
+        elif age_pref_list == ["younger"]:
+            age_pref = 1
+        elif age_pref_list == ["older"]:
+            age_pref = 2
+        elif age_pref_list == ["younger", "same"]:
+            age_pref = 3
+        elif age_pref_list == ["older", "same"]:
+            age_pref = 4
+        elif age_pref_list == ["younger", "older"]:
+            age_pref = 5
+        else:
+            age_pref = None
+        
+        gender_pref = request.POST['genderPref']
+        if gender_pref == 'A':
+            gender_pref = None
+        request.user.age = age
+        request.user.gender = gender
+        request.user.age_pref = age_pref
+        request.user.gender_pref = gender_pref
+        request.user.save()
+        return render(request, 'settings.html')
+    return render(request, 'settings.html')
