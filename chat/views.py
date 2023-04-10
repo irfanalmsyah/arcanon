@@ -89,10 +89,70 @@ def requester(request):
 @login_required
 def responder(request):
     if request.method == 'POST':
-        room = Room.objects.first()
-        room.responder = request.user
-        room.save()
-        return redirect(reverse('room', kwargs={'room_name': room.name}))
+        room = None
+        rooms = Room.objects.all()
+        for r in rooms:
+            requester_age = r.requester.age
+            requester_gender = r.requester.gender
+            requester_age_pref = r.requester.age_pref
+            requester_gender_pref = r.requester.gender_pref
+            responder_age = request.user.age
+            responder_gender = request.user.gender
+            responder_age_pref = request.user.age_pref
+            responder_gender_pref = request.user.gender_pref
+            if responder_gender_pref:
+                if requester_gender != responder_gender_pref:
+                    continue
+            if requester_gender_pref:
+                if responder_gender != requester_gender_pref:
+                    continue
+            if responder_age_pref:
+                if responder_age_pref == 0:
+                    if requester_age != responder_age:
+                        continue
+                elif responder_age_pref == 1:
+                    if requester_age >= responder_age:
+                        continue
+                elif responder_age_pref == 2:
+                    if requester_age <= responder_age:
+                        continue
+                elif responder_age_pref == 3:
+                    if requester_age > responder_age:
+                        continue
+                elif responder_age_pref == 4:
+                    if requester_age < responder_age:
+                        continue
+                elif responder_age_pref == 5:
+                    if requester_age == responder_age:
+                        continue
+            if requester_age_pref:
+                if requester_age_pref == 0:
+                    if responder_age != requester_age:
+                        continue
+                elif requester_age_pref == 1:
+                    if responder_age >= requester_age:
+                        continue
+                elif requester_age_pref == 2:
+                    if responder_age <= requester_age:
+                        continue
+                elif requester_age_pref == 3:
+                    if responder_age > requester_age:
+                        continue
+                elif requester_age_pref == 4:
+                    if responder_age < requester_age:
+                        continue
+                elif requester_age_pref == 5:
+                    if responder_age == requester_age:
+                        continue
+            room = r
+            break
+        if room:
+            room.responder = request.user
+            room.save()
+            return redirect(reverse('room', kwargs={'room_name': room.name}))
+        else:
+            return redirect('index')
+            
 
 @login_required
 def settings(request):
@@ -116,11 +176,11 @@ def settings(request):
             age_pref = 1
         elif age_pref_list == ["older"]:
             age_pref = 2
-        elif age_pref_list == ["younger", "same"]:
+        elif age_pref_list == ["same", "younger"]:
             age_pref = 3
-        elif age_pref_list == ["older", "same"]:
+        elif age_pref_list == ["same", "older"]:
             age_pref = 4
-        elif age_pref_list == ["younger", "older"]:
+        elif age_pref_list == ["older", "younger"]:
             age_pref = 5
         else:
             age_pref = None
