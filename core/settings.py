@@ -10,6 +10,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'main',
     'chat',
     'daphne',
     'django.contrib.admin',
@@ -80,4 +81,4 @@ LOGIN_URL = 'login'
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
-AUTH_USER_MODEL = 'chat.User'
+AUTH_USER_MODEL = 'main.User'
