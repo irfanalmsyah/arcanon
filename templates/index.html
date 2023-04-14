@@ -4,6 +4,7 @@
     hello, {{ user }}
     <a href="{% url 'logout' %}">Logout</a>
     <a href="{% url 'settings' %}">Settings</a>
+    <a href="{% url 'create_post' %}">Create Post</a>
     {% if room %}
         You already has a room with a stranger as a 
         {% if room.requester == user %}
@@ -21,5 +22,12 @@
             {% csrf_token %}
             <button type "submit">Respond</button>
         </form>
+    {% endif %}
+    {% if posts %}
+        {% for post in posts %}
+            <a href="{% url 'post' post.id %}">{{ post.title }}</a>
+            <p>{{ post.content }}</p>
+            <p>{{ post.created_at }}</p>
+        {% endfor %}
     {% endif %}
 {% endblock content %}
