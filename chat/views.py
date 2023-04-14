@@ -4,21 +4,20 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from .models import Room
 from .random_string import generate_random_string
+from django.views import View
 
-@login_required
-def room(request, room_name):
-    try:
-        room = Room.objects.get(name=room_name)
-    except Room.DoesNotExist:
-        raise Http404("Room does not exist")
-    if request.user not in [room.requester, room.responder]:
-        raise Http404("You are not allowed to view this room")
-    return render(request, "room.html", {"room": room }) 
-
-
-@login_required
-def requester(request):
-    if request.method == 'POST':
+class RoomView(View):
+    def get(self, request, room_name):
+        try:
+            room = Room.objects.get(name=room_name)
+        except Room.DoesNotExist:
+            raise Http404("Room does not exist")
+        if request.user not in [room.requester, room.responder]:
+            raise Http404("You are not allowed to view this room")
+        return render(request, "room.html", {"room": room })
+    
+class RequesterView(View):
+    def post(self, request):
         room_name = generate_random_string()
         try:
             room = Room.objects.get(requester=request.user)
@@ -27,10 +26,8 @@ def requester(request):
             room.save()
         return redirect(reverse('room', kwargs={'room_name': room.name}))
 
-
-@login_required
-def responder(request):
-    if request.method == 'POST':
+class ResponderView(View):
+    def post(self, request):
         room = None
         rooms = Room.objects.all()
         for r in rooms:
@@ -94,5 +91,4 @@ def responder(request):
             return redirect(reverse('room', kwargs={'room_name': room.name}))
         else:
             return redirect('index')
-            
 

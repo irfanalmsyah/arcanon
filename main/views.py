@@ -4,21 +4,22 @@ from chat.models import Room
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from .forms import CustomUserCreationForm
+from django.views import View
 
+class IndexView(View):
+    def get(self, request):
+        try:
+            room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
+        except Room.DoesNotExist:
+            room = None
+        return render(request, "index.html", {"room": room})
 
-@login_required
-def index(request):
-    try:
-        room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
-    except Room.DoesNotExist:
-        room = None
-    return render(request, "index.html", {"room": room})
-
-
-def login_view(request):
-    if request.user.is_authenticated:
-        return redirect("index")
-    if request.method == "POST":
+class LoginView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect("index")
+        return render(request, 'login.html')
+    def post(self, request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
@@ -28,42 +29,39 @@ def login_view(request):
         else:
             context = {'message': 'Invalid username or password.'}
             return render(request, 'login.html', context)
-    else:
-        return render(request, 'login.html')
 
-
-@login_required
-def logout_view(request):
-    logout(request)
-    return redirect('index')
-
-
-def register(request):
-    if request.user.is_authenticated:
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
         return redirect('index')
-    else:
-        if request.method == 'POST':
-            form = CustomUserCreationForm(request.POST)
-            if form.is_valid():
-                # Create and save a new user
-                user = form.save()
-                # Authenticate and log in the user
-                login(request, user)
-                return redirect('index')
-            else:
-                # Extract any error messages from the form and pass them to the template
-                message = ''
-                for error in form.errors.values():
-                    message += error[0] + ' '
-                context = {'message': message}
-                return render(request, 'register.html', context)
+
+class RegisterView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('index')
         else:
             return render(request, 'register.html')
+    def post(self, request):
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            # Create and save a new user
+            user = form.save()
+            # Authenticate and log in the user
+            login(request, user)
+            return redirect('index')
+        else:
+            # Extract any error messages from the form and pass them to the template
+            message = ''
+            for error in form.errors.values():
+                message += error[0] + ' '
+            context = {'message': message}
+            return render(request, 'register.html', context)
 
-
-@login_required
-def settings(request):
-    if (request.method == 'POST'):
+class SettingsView(View):
+    def get(self, request):
+        return render(request, 'settings.html')
+    
+    def post(self, request):
         age = request.POST['age']
         if age == '':
             age = None
@@ -101,4 +99,3 @@ def settings(request):
         request.user.gender_pref = gender_pref
         request.user.save()
         return render(request, 'settings.html')
-    return render(request, 'settings.html')
