@@ -22,4 +22,11 @@
             <button type "submit">Respond</button>
         </form>
     {% endif %}
+    {% if posts %}
+        {% for post in posts %}
+            <h1>{{ post.title }}</h1>
+            <p>{{ post.content }}</p>
+            <p>{{ post.created_at }}</p>
+        {% endfor %}
+    {% endif %}
 {% endblock content %}

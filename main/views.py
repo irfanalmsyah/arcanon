@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from chat.models import Room
+from forum.models import Post, Comment
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from .forms import CustomUserCreationForm
@@ -12,7 +13,13 @@ class IndexView(View):
             room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
         except Room.DoesNotExist:
             room = None
-        return render(request, "index.html", {"room": room})
+        try:
+            # get first 10 posts
+            posts = Post.objects.all().order_by('-date_posted')[:10]
+        except Post.DoesNotExist:
+            posts = None
+        context = {'room': room, 'posts': posts}
+        return render(request, "index.html", context)
 
 class LoginView(View):
     def get(self, request):
