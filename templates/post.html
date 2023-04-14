@@ -8,4 +8,9 @@
         <p>{{ comment.content }}</p>
         <p>{{ comment.date_posted }}</p>
     {% endfor %}
+    <form method="POST" action="{% url 'create_comment' post.id %}">
+        {% csrf_token %}
+        <input type="text" name="content">
+        <input type="submit" value="Add Comment">
+    </form>
 {% endblock content %}
