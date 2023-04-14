@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Chat{% endblock title %}
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <p>{{ post.date_posted }}</p>
+    {% for comment in comments %}
+        <p>{{ comment.content }}</p>
+        <p>{{ comment.date_posted }}</p>
+    {% endfor %}
+{% endblock content %}
