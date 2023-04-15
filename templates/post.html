@@ -5,6 +5,9 @@
     <p>{{ post.content }}</p>
     <p>{{ post.date_posted }}</p>
     {% for comment in comments %}
+        {% if comment.author == post.author %}
+            OP
+        {% endif %}
         <p>{{ comment.content }}</p>
         <p>{{ comment.date_posted }}</p>
     {% endfor %}
