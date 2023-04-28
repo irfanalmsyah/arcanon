@@ -1,19 +1,57 @@
-{% extends 'base.html' %}
+{% extends 'base-room.html' %}
 {% block title %}Chat{% endblock title %}
 {% block content %}
     {% if not room.responder %}
-        the responder is not here yet  
+    <div id="no-responder-interface">
+        <h1>Waiting for responder .. <br> </h1>
+        <input type="button" value="Return to homepage" onclick="return1();">
+        <script>
+            function return1()
+            {
+                window.location.href = "{% url 'index' %}";
+                return false;
+            }
+        </script>
+    </div>
+
     {% else %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <div id="frame">
+            <div class="content">
+                <div class="contact-profile">
+                    <img src="https://th.bing.com/th/id/R.1adee185ab6268d386199ba85456b75e?rik=uEWojh2KrzyTDQ&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_313882.png&ehk=STFKvIOA2X4hjLEOGU41uaLzqSEH0w%2bYqhtHIMua8e8%3d&risl=&pid=ImgRaw&r=0" alt="" />
+                    <p>Stranger</p>
+                    <div class="social-media">
+                        <i class="fa fa-home" aria-hidden="true" onclick="disconnect()"></i>
+                        <i class="fa fa-close" aria-hidden="true" onclick="destroy()"></i>
+                    </div>
+                </div>
+                <div class="messages">
+                    <ul>
+                    </ul>
+                </div>
+                <div class="message-input">
+                    <div class="wrap">
+                    <input id = "chat-message-input" type="text" placeholder="Write your message..." />
+                    <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                    <button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script><script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+    </body>
+    <!--
         <textarea id="chat-log" cols="100" rows="20"></textarea><br>
         <input id="chat-message-input" type="text" size="100"><br>
-        <input id="chat-message-submit" type="button" value="Send">
+        <input id="chat-message-submit" type="button" value="Send"> -->
         {{ room.name|json_script:"room-name" }}
         {{ user.username|json_script:"user" }}
-        <button onclick="disconnect()">Back to Home</button>
-        <button onclick="destroy()">End Conversation</button>
+        
         <script>
+            $(".messages").animate({ scrollTop: $(document).height() }, "fast");
             window.onload = function() {
-                document.querySelector('#chat-log').value = 'Welcome to the chat room!\n';
+                //document.querySelector('#chat-log').value = 'Welcome to the chat room!\n';
             };
             const roomName = JSON.parse(document.getElementById('room-name').textContent);
             const user = JSON.parse(document.getElementById('user').textContent);
@@ -26,12 +64,23 @@
             );
 
             chatSocket.onmessage = function(e) {
+                var docHeight = $(document).height();
                 const data = JSON.parse(e.data);
                 if (data.message) {
-                    document.querySelector('#chat-log').value += (data.user + ': ' + data.message + '\n');
+                    //document.querySelector('#chat-log').value += (data.user + ': ' + data.message + '\n');
+                    message = data.message;
+                    if(data.user == user || data.user == "You"){
+                        $('<li class="sent"><img src="https://th.bing.com/th/id/OIP.CGN_R3YtmCaxNFdrPQCKBQHaHT?pid=ImgDet&rs=1" alt="" /><p>' + data.message + '</p></li>').appendTo($('.messages ul'));
+                        $('.message-input input').val(null);
+                    }
+                    else{
+                        $('<li class="replies"><img src="https://th.bing.com/th/id/R.1adee185ab6268d386199ba85456b75e?rik=uEWojh2KrzyTDQ&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_313882.png&ehk=STFKvIOA2X4hjLEOGU41uaLzqSEH0w%2bYqhtHIMua8e8%3d&risl=&pid=ImgRaw&r=0" alt="" /><p>' + data.message + '</p></li>').appendTo($('.messages ul'));
+                        $('.message-input input').val(null);
+                    }
+                    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
                 } else {
                     alert("User has left the chat room");
-                    disconnect();
+                    destroy();
                 }
             };
 

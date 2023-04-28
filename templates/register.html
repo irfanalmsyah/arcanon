@@ -1,16 +1,56 @@
-{% extends 'base.html' %}
+{% extends 'base-login.html' %}
 {% block title %}Register{% endblock title %}Register
 {% block content %}
-    Register
-    <form action="{% url 'register' %}" method="POST">
-        {% csrf_token %}
-        <input type="text" placeholder="Username" name="username" autocomplete="username" autocapitalize="none"  autofocus required>
-        <input type="password" placeholder="Password" id="password1" name="password1" autocomplete="new-password" minlength="8" required >
-        <input type="password" placeholder="Confirm Password" id="password2" name="password2" autocomplete="new-password" minlength="8" oninput=check(this) required>
-        <button type="submit">Register</button>
-        Have an account? <a href="{% url 'login' %}">Login</a>
-    </form>
+    <div class="card mx-4 mx-md-5 shadow-5-strong" style="
+          margin-top: -100px;
+          background: hsla(0, 0%, 100%, 0.8);
+          backdrop-filter: blur(30px);
+          width: 75%;
+          ">
+      <div class="card-body py-5 px-md-5">
+        <div class="row d-flex justify-content-center">
+          <div class="col-lg-8">
+            <h2 class="fw-bold mb-5">Sign up now</h2>
+            <form action="{% url 'register' %}" method="POST">
+                {% csrf_token %}
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                <input type="text" class="form-control" name="username" autocomplete="username" autocapitalize="none"  autofocus required />
+                <label class="form-label" for="form3Example3">Username</label>
+              </div>
+  
+              <!-- Password input -->
+              <div class="form-outline mb-4">
+                <input type="password" class="form-control" id="password1" name="password1" autocomplete="current-password" minlength="8" required />
+                <label class="form-label" for="form3Example4">Password</label>
+              </div>
 
+              <div class="form-outline mb-4">
+                <input type="password" class="form-control" id="password2" name="password2" autocomplete="new-password" minlength="8" oninput=check(this) required/>
+                <label class="form-label" for="form3Example4">Confirm Password</label>
+              </div>
+  
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary btn-block mb-4">
+                Sign Up
+              </button>
+
+              <p>Already have an account?</p>
+              <button type="submit" class="btn btn-primary btn-block mb-4" onclick="toLogin()">
+                  Login
+                </button>
+                <script>
+                  function toLogin()
+                  {
+                      window.location.href = "{% url 'login' %}";
+                      return false;
+                  }
+              </script>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     <script language='javascript' type='text/javascript'>
         function check(input) {
             if (input.value != document.getElementById('password1').value) {
