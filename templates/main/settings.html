@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Chat{% endblock title %}
+{% block content %}
+    {% include 'includes/navbar.html' %}
+    <div class="row">
+        {% include 'includes/navpanel.html' with settings_navpanel='active' %}      
+        <div id="settings-panel" class="col-9 mx-auto pe-5">
+            <div class="fs-2 fw-semibold">
+                Settings
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                          <a class="nav-link active" id="account-tab" data-bs-toggle="tab" data-bs-target="#account-tab-pane" href="#account-tab-pane" type="button" role="tab" aria-controls="account-tab-pane" aria-selected="true">Account</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <a class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" href="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <a class="nav-link" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat-tab-pane" href="#chat-tab-pane" type="button" role="tab" aria-controls="chat-tab-pane" aria-selected="false">Chat</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="account-tab-pane" role="tabpanel" aria-labelledby="account-tab" tabindex="0">
+                        <form class="row g-3 p-3 ps-5" method="POST" action="{% url 'settings' %}">
+                            {% csrf_token %}
+                            <div class="col-md-6">
+                                <label for="inputEmail4" class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control setting-input" id="inputEmail4" value="{{ user.email }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputPassword4" class="form-label">Password</label>
+                                <input type="password" name="old_password" class="form-control setting-input" id="inputPassword4">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputEmail4" class="form-label">Phone Number</label>
+                                <input type="text" name="phone" class="form-control setting-input" id="inputEmail4" value="{{ user.phone }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputPassword4" class="form-label">Change Password</label>
+                                <input type="password" name="new_password1" id="new_password1"  class="form-control setting-input" id="inputPassword4">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputEmail4" class="form-label">Username</label>
+                                <input type="text" class="form-control setting-input" id="inputEmail4" value="{{ user.username }}" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputPassword4" class="form-label">Confirm New Password</label>
+                                <input type="password" name="new_password2" id="new_password2" class="form-control setting-input" id="inputPassword4">
+                            </div>
+                            <div class="row align-items-center">
+                                {% if message %}
+                                    {% if message == 'Password changed successfully.' %}
+                                        <div class="col-8 alert alert-danger-dark-green mt-3 setting-alert" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% else %}
+                                        <div class="col-8 alert alert-danger-dark mt-3 setting-alert" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                <div class="col-8 alert alert-danger-dark-off mt-3 setting-alert" role="alert">
+                                    
+                                </div>
+                                {% endif %}
+                                <div class="col-4 text-end">
+                                    <button name="type" value="account" type="submit" class="btn btn-blue save-btn">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                        <form method="POST" action="{% url 'settings' %}">
+                            <div class="profile-img">
+                                {% if user.picture %}
+                                    <img src="{{ request.user.picture.url }}" alt="" class="rounded-circle" width="100" height="100">
+                                {% else %}
+                                    <img src="{% static 'img/default_user.png' %}" alt="" class="rounded-circle" width="80" height="80">
+                                {% endif %}
+                                <div class="profile-img-content">
+                                    <span>
+                                        <i class="bi bi-camera-fill"></i>
+                                    </span>
+                                    <span>
+                                        Ubah Foto
+                                    </span>
+                                </div>
+                                <input type="file" name="image" id="image">
+                            </div>
+                            <div class="row g-3 p-3 ps-5">
+                                {% csrf_token %}
+                                <div class="col-md-6">
+                                    <label for="inputEmail4" class="form-label">Full Name</label>
+                                    <input type="text" name="name" class="form-control setting-input" value="{{ user.name }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="countrySelect" class="form-label">Country</label>
+                                    <select name="country" class="form-control setting-input" id="countrySelect">
+                                        <option value="">Select a country...</option>
+                                        <option value="af" {% if user.country == "af" %}selected{% endif %}>🇦🇫 Afghanistan</option>
+                                        <option value="al" {% if user.country == "al" %}selected{% endif %}>🇦🇱 Albania</option>
+                                        <option value="dz" {% if user.country == "dz" %}selected{% endif %}>🇩🇿 Algeria</option>
+                                        <option value="ad" {% if user.country == "ad" %}selected{% endif %}>🇦🇩 Andorra</option>
+                                        <option value="ao" {% if user.country == "ao" %}selected{% endif %}>🇦🇴 Angola</option>
+                                        <option value="ag" {% if user.country == "ag" %}selected{% endif %}>🇦🇬 Antigua and Barbuda</option>
+                                        <option value="ar" {% if user.country == "ar" %}selected{% endif %}>🇦🇷 Argentina</option>
+                                        <option value="am" {% if user.country == "am" %}selected{% endif %}>🇦🇲 Armenia</option>
+                                        <option value="au" {% if user.country == "au" %}selected{% endif %}>🇦🇺 Australia</option>
+                                        <option value="at" {% if user.country == "at" %}selected{% endif %}>🇦🇹 Austria</option>
+                                        <option value="az" {% if user.country == "az" %}selected{% endif %}>🇦🇿 Azerbaijan</option>
+                                        <option value="bs" {% if user.country == "bs" %}selected{% endif %}>🇧🇸 Bahamas</option>
+                                        <option value="bh" {% if user.country == "bh" %}selected{% endif %}>🇧🇭 Bahrain</option>
+                                        <option value="bd" {% if user.country == "bd" %}selected{% endif %}>🇧🇩 Bangladesh</option>
+                                        <option value="bb" {% if user.country == "bb" %}selected{% endif %}>🇧🇧 Barbados</option>
+                                        <option value="by" {% if user.country == "by" %}selected{% endif %}>🇧🇾 Belarus</option>
+                                        <option value="be" {% if user.country == "be" %}selected{% endif %}>🇧🇪 Belgium</option>
+                                        <option value="bz" {% if user.country == "bz" %}selected{% endif %}>🇧🇿 Belize</option>
+                                        <option value="bj" {% if user.country == "bj" %}selected{% endif %}>🇧🇯 Benin</option>
+                                        <option value="bt" {% if user.country == "bt" %}selected{% endif %}>🇧🇹 Bhutan</option>
+                                        <option value="bo" {% if user.country == "bo" %}selected{% endif %}>🇧🇴 Bolivia</option>
+                                        <option value="ba" {% if user.country == "ba" %}selected{% endif %}>🇧🇦 Bosnia and Herzegovina</option>
+                                        <option value="bw" {% if user.country == "bw" %}selected{% endif %}>🇧🇼 Botswana</option>
+                                        <option value="br" {% if user.country == "br" %}selected{% endif %}>🇧🇷 Brazil</option>
+                                        <option value="bn" {% if user.country == "bn" %}selected{% endif %}>🇧🇳 Brunei</option>
+                                        <option value="bg" {% if user.country == "bg" %}selected{% endif %}>🇧🇬 Bulgaria</option>
+                                        <option value="bf" {% if user.country == "bf" %}selected{% endif %}>🇧🇫 Burkina Faso</option>
+                                        <option value="bi" {% if user.country == "bi" %}selected{% endif %}>🇧🇮 Burundi</option>
+                                        <option value="cv" {% if user.country == "cv" %}selected{% endif %}>🇨🇻 Cape Verde</option>
+                                        <option value="kh" {% if user.country == "kh" %}selected{% endif %}>🇰🇭 Cambodia</option>
+                                        <option value="cm" {% if user.country == "cm" %}selected{% endif %}>🇨🇲 Cameroon</option>
+                                        <option value="ca" {% if user.country == "ca" %}selected{% endif %}>🇨🇦 Canada</option>
+                                        <option value="cf" {% if user.country == "cf" %}selected{% endif %}>🇨🇫 Central African Republic</option>
+                                        <option value="td" {% if user.country == "td" %}selected{% endif %}>🇹🇩 Chad</option>
+                                        <option value="cl" {% if user.country == "cl" %}selected{% endif %}>🇨🇱 Chile</option>
+                                        <option value="cn" {% if user.country == "cn" %}selected{% endif %}>🇨🇳 China</option>
+                                        <option value="co" {% if user.country == "co" %}selected{% endif %}>🇨🇴 Colombia</option>
+                                        <option value="km" {% if user.country == "km" %}selected{% endif %}>🇰🇲 Comoros</option>
+                                        <option value="cg" {% if user.country == "cg" %}selected{% endif %}>🇨🇬 Congo</option>
+                                        <option value="cd" {% if user.country == "cd" %}selected{% endif %}>🇨🇩 Democratic Republic of the Congo</option>
+                                        <option value="cr" {% if user.country == "cr" %}selected{% endif %}>🇨🇷 Costa Rica</option>
+                                        <option value="hr" {% if user.country == "hr" %}selected{% endif %}>🇭🇷 Croatia</option>
+                                        <option value="cu" {% if user.country == "cu" %}selected{% endif %}>🇨🇺 Cuba</option>
+                                        <option value="cy" {% if user.country == "cy" %}selected{% endif %}>🇨🇾 Cyprus</option>
+                                        <option value="cz" {% if user.country == "cz" %}selected{% endif %}>🇨🇿 Czech Republic</option>
+                                        <option value="dk" {% if user.country == "dk" %}selected{% endif %}>🇩🇰 Denmark</option>
+                                        <option value="dj" {% if user.country == "dj" %}selected{% endif %}>🇩🇯 Djibouti</option>
+                                        <option value="dm" {% if user.country == "dm" %}selected{% endif %}>🇩🇲 Dominica</option>
+                                        <option value="do" {% if user.country == "do" %}selected{% endif %}>🇩🇴 Dominican Republic</option>
+                                        <option value="ec" {% if user.country == "ec" %}selected{% endif %}>🇪🇨 Ecuador</option>
+                                        <option value="in" {% if user.country == "in" %}selected{% endif %}>🇮🇳 India</option>
+                                        <option value="id" {% if user.country == "id" %}selected{% endif %}>🇮🇩 Indonesia</option>
+                                        <option value="ir" {% if user.country == "ir" %}selected{% endif %}>🇮🇷 Iran</option>
+                                        <option value="iq" {% if user.country == "iq" %}selected{% endif %}>🇮🇶 Iraq</option>
+                                        <option value="ie" {% if user.country == "ie" %}selected{% endif %}>🇮🇪 Ireland</option>
+                                        <option value="il" {% if user.country == "il" %}selected{% endif %}>🇮🇱 Israel</option>
+                                        <option value="it" {% if user.country == "it" %}selected{% endif %}>🇮🇹 Italy</option>
+                                        <option value="jm" {% if user.country == "jm" %}selected{% endif %}>🇯🇲 Jamaica</option>
+                                        <option value="jp" {% if user.country == "jp" %}selected{% endif %}>🇯🇵 Japan</option>
+                                        <option value="jo" {% if user.country == "jo" %}selected{% endif %}>🇯🇴 Jordan</option>
+                                        <option value="kz" {% if user.country == "kz" %}selected{% endif %}>🇰🇿 Kazakhstan</option>
+                                        <option value="ke" {% if user.country == "ke" %}selected{% endif %}>🇰🇪 Kenya</option>
+                                        <option value="ki" {% if user.country == "ki" %}selected{% endif %}>🇰🇮 Kiribati</option>
+                                        <option value="kw" {% if user.country == "kw" %}selected{% endif %}>🇰🇼 Kuwait</option>
+                                        <option value="kg" {% if user.country == "kg" %}selected{% endif %}>🇰🇬 Kyrgyzstan</option>
+                                        <option value="la" {% if user.country == "la" %}selected{% endif %}>🇱🇦 Laos</option>
+                                        <option value="lv" {% if user.country == "lv" %}selected{% endif %}>🇱🇻 Latvia</option>
+                                        <option value="lb" {% if user.country == "lb" %}selected{% endif %}>🇱🇧 Lebanon</option>
+                                        <option value="ls" {% if user.country == "ls" %}selected{% endif %}>🇱🇸 Lesotho</option>
+                                        <option value="lr" {% if user.country == "lr" %}selected{% endif %}>🇱🇷 Liberia</option>
+                                        <option value="ly" {% if user.country == "ly" %}selected{% endif %}>🇱🇾 Libya</option>
+                                        <option value="li" {% if user.country == "li" %}selected{% endif %}>🇱🇮 Liechtenstein</option>
+                                        <option value="lt" {% if user.country == "lt" %}selected{% endif %}>🇱🇹 Lithuania</option>
+                                        <option value="lu" {% if user.country == "lu" %}selected{% endif %}>🇱🇺 Luxembourg</option>
+                                        <option value="mk" {% if user.country == "mk" %}selected{% endif %}>🇲🇰 Macedonia</option>
+                                        <option value="mg" {% if user.country == "mg" %}selected{% endif %}>🇲🇬 Madagascar</option>
+                                        <option value="mw" {% if user.country == "mw" %}selected{% endif %}>🇲🇼 Malawi</option>
+                                        <option value="my" {% if user.country == "my" %}selected{% endif %}>🇲🇾 Malaysia</option>
+                                        <option value="mv" {% if user.country == "mv" %}selected{% endif %}>🇲🇻 Maldives</option>
+                                        <option value="ml" {% if user.country == "ml" %}selected{% endif %}>🇲🇱 Mali</option>
+                                        <option value="mt" {% if user.country == "mt" %}selected{% endif %}>🇲🇹 Malta</option>
+                                        <option value="mh" {% if user.country == "mh" %}selected{% endif %}>🇲🇭 Marshall Islands</option>
+                                        <option value="mr" {% if user.country == "mr" %}selected{% endif %}>🇲🇷 Mauritania</option>
+                                        <option value="mu" {% if user.country == "mu" %}selected{% endif %}>🇲🇺 Mauritius</option>
+                                        <option value="mx" {% if user.country == "mx" %}selected{% endif %}>🇲🇽 Mexico</option>
+                                        <option value="fm" {% if user.country == "fm" %}selected{% endif %}>🇫🇲 Micronesia</option>
+                                        <option value="md" {% if user.country == "md" %}selected{% endif %}>🇲🇩 Moldova</option>
+                                        <option value="mc" {% if user.country == "mc" %}selected{% endif %}>🇲🇨 Monaco</option>
+                                        <option value="mn" {% if user.country == "mn" %}selected{% endif %}>🇲🇳 Mongolia</option>
+                                        <option value="me" {% if user.country == "me" %}selected{% endif %}>🇲🇪 Montenegro</option>
+                                        <option value="ma" {% if user.country == "ma" %}selected{% endif %}>🇲🇦 Morocco</option>
+                                        <option value="mz" {% if user.country == "mz" %}selected{% endif %}>🇲🇿 Mozambique</option>
+                                        <option value="mm" {% if user.country == "mm" %}selected{% endif %}>🇲🇲 Myanmar</option>
+                                        <option value="na" {% if user.country == "na" %}selected{% endif %}>🇳🇦 Namibia</option>
+                                        <option value="nr" {% if user.country == "nr" %}selected{% endif %}>🇳🇷 Nauru</option>
+                                        <option value="np" {% if user.country == "np" %}selected{% endif %}>🇳🇵 Nepal</option>
+                                        <option value="nl" {% if user.country == "nl" %}selected{% endif %}>🇳🇱 Netherlands</option>
+                                        <option value="nz" {% if user.country == "nz" %}selected{% endif %}>🇳🇿 New Zealand</option>
+                                        <option value="ni" {% if user.country == "ni" %}selected{% endif %}>🇳🇮 Nicaragua</option>
+                                        <option value="ne" {% if user.country == "ne" %}selected{% endif %}>🇳🇪 Niger</option>
+                                        <option value="ng" {% if user.country == "ng" %}selected{% endif %}>🇳🇬 Nigeria</option>
+                                        <option value="kp" {% if user.country == "kp" %}selected{% endif %}>🇰🇵 North Korea</option>
+                                        <option value="no" {% if user.country == "no" %}selected{% endif %}>🇳🇴 Norway</option>
+                                        <option value="om" {% if user.country == "om" %}selected{% endif %}>🇴🇲 Oman</option>
+                                        <option value="pk" {% if user.country == "pk" %}selected{% endif %}>🇵🇰 Pakistan</option>
+                                        <option value="pw" {% if user.country == "pw" %}selected{% endif %}>🇵🇼 Palau</option>
+                                        <option value="pa" {% if user.country == "pa" %}selected{% endif %}>🇵🇦 Panama</option>
+                                        <option value="pg" {% if user.country == "pg" %}selected{% endif %}>🇵🇬 Papua New Guinea</option>
+                                        <option value="py" {% if user.country == "py" %}selected{% endif %}>🇵🇾 Paraguay</option>
+                                        <option value="pe" {% if user.country == "pe" %}selected{% endif %}>🇵🇪 Peru</option>
+                                        <option value="ph" {% if user.country == "ph" %}selected{% endif %}>🇵🇭 Philippines</option>
+                                        <option value="pl" {% if user.country == "pl" %}selected{% endif %}>🇵🇱 Poland</option>
+                                        <option value="pt" {% if user.country == "pt" %}selected{% endif %}>🇵🇹 Portugal</option>
+                                        <option value="qa" {% if user.country == "qa" %}selected{% endif %}>🇶🇦 Qatar</option>
+                                        <option value="ro" {% if user.country == "ro" %}selected{% endif %}>🇷🇴 Romania</option>
+                                        <option value="ru" {% if user.country == "ru" %}selected{% endif %}>🇷🇺 Russia</option>
+                                        <option value="rw" {% if user.country == "rw" %}selected{% endif %}>🇷🇼 Rwanda</option>
+                                        <option value="kn" {% if user.country == "kn" %}selected{% endif %}>🇰🇳 Saint Kitts and Nevis</option>
+                                        <option value="lc" {% if user.country == "lc" %}selected{% endif %}>🇱🇨 Saint Lucia</option>
+                                        <option value="vc" {% if user.country == "vc" %}selected{% endif %}>🇻🇨 Saint Vincent and the Grenadines</option>
+                                        <option value="ws" {% if user.country == "ws" %}selected{% endif %}>🇼🇸 Samoa</option>
+                                        <option value="sm" {% if user.country == "sm" %}selected{% endif %}>🇸🇲 San Marino</option>
+                                        <option value="st" {% if user.country == "st" %}selected{% endif %}>🇸🇹 Sao Tome and Principe</option>
+                                        <option value="sa" {% if user.country == "sa" %}selected{% endif %}>🇸🇦 Saudi Arabia</option>
+                                        <option value="sn" {% if user.country == "sn" %}selected{% endif %}>🇸🇳 Senegal</option>
+                                        <option value="rs" {% if user.country == "rs" %}selected{% endif %}>🇷🇸 Serbia</option>
+                                        <option value="sc" {% if user.country == "sc" %}selected{% endif %}>🇸🇨 Seychelles</option>
+                                        <option value="sl" {% if user.country == "sl" %}selected{% endif %}>🇸🇱 Sierra Leone</option>
+                                        <option value="sg" {% if user.country == "sg" %}selected{% endif %}>🇸🇬 Singapore</option>
+                                        <option value="sk" {% if user.country == "sk" %}selected{% endif %}>🇸🇰 Slovakia</option>
+                                        <option value="si" {% if user.country == "si" %}selected{% endif %}>🇸🇮 Slovenia</option>
+                                        <option value="sb" {% if user.country == "sb" %}selected{% endif %}>🇸🇧 Solomon Islands</option>
+                                        <option value="so" {% if user.country == "so" %}selected{% endif %}>🇸🇴 Somalia</option>
+                                        <option value="za" {% if user.country == "za" %}selected{% endif %}>🇿🇦 South Africa</option>
+                                        <option value="kr" {% if user.country == "kr" %}selected{% endif %}>🇰🇷 South Korea</option>
+                                        <option value="ss" {% if user.country == "ss" %}selected{% endif %}>🇸🇸 South Sudan</option>
+                                        <option value="es" {% if user.country == "es" %}selected{% endif %}>🇪🇸 Spain</option>
+                                        <option value="lk" {% if user.country == "lk" %}selected{% endif %}>🇱🇰 Sri Lanka</option>
+                                        <option value="sd" {% if user.country == "sd" %}selected{% endif %}>🇸🇩 Sudan</option>
+                                        <option value="sr" {% if user.country == "sr" %}selected{% endif %}>🇸🇷 Suriname</option>
+                                        <option value="sz" {% if user.country == "sz" %}selected{% endif %}>🇸🇿 Swaziland</option>
+                                        <option value="se" {% if user.country == "se" %}selected{% endif %}>🇸🇪 Sweden</option>
+                                        <option value="ch" {% if user.country == "ch" %}selected{% endif %}>🇨🇭 Switzerland</option>
+                                        <option value="sy" {% if user.country == "sy" %}selected{% endif %}>🇸🇾 Syria</option>
+                                        <option value="tw" {% if user.country == "tw" %}selected{% endif %}>🇹🇼 Taiwan</option>
+                                        <option value="tj" {% if user.country == "tj" %}selected{% endif %}>🇹🇯 Tajikistan</option>
+                                        <option value="tz" {% if user.country == "tz" %}selected{% endif %}>🇹🇿 Tanzania</option>
+                                        <option value="th" {% if user.country == "th" %}selected{% endif %}>🇹🇭 Thailand</option>
+                                        <option value="tl" {% if user.country == "tl" %}selected{% endif %}>🇹🇱 Timor-Leste</option>
+                                        <option value="tg" {% if user.country == "tg" %}selected{% endif %}>🇹🇬 Togo</option>
+                                        <option value="to" {% if user.country == "to" %}selected{% endif %}>🇹🇴 Tonga</option>
+                                        <option value="tt" {% if user.country == "tt" %}selected{% endif %}>🇹🇹 Trinidad and Tobago</option>
+                                        <option value="tn" {% if user.country == "tn" %}selected{% endif %}>🇹🇳 Tunisia</option>
+                                        <option value="tr" {% if user.country == "tr" %}selected{% endif %}>🇹🇷 Turkey</option>
+                                        <option value="tm" {% if user.country == "tm" %}selected{% endif %}>🇹🇲 Turkmenistan</option>
+                                        <option value="tv" {% if user.country == "tv" %}selected{% endif %}>🇹🇻 Tuvalu</option>
+                                        <option value="ug" {% if user.country == "ug" %}selected{% endif %}>🇺🇬 Uganda</option>
+                                        <option value="ua" {% if user.country == "ua" %}selected{% endif %}>🇺🇦 Ukraine</option>
+                                        <option value="ae" {% if user.country == "ae" %}selected{% endif %}>🇦🇪 United Arab Emirates</option>
+                                        <option value="gb" {% if user.country == "gb" %}selected{% endif %}>🇬🇧 United Kingdom</option>
+                                        <option value="us" {% if user.country == "us" %}selected{% endif %}>🇺🇸 United States</option>
+                                        <option value="uy" {% if user.country == "uy" %}selected{% endif %}>🇺🇾 Uruguay</option>
+                                        <option value="uz" {% if user.country == "uz" %}selected{% endif %}>🇺🇿 Uzbekistan</option>
+                                        <option value="vu" {% if user.country == "vu" %}selected{% endif %}>🇻🇺 Vanuatu</option>
+                                        <option value="va" {% if user.country == "va" %}selected{% endif %}>🇻🇦 Vatican City</option>
+                                        <option value="ve" {% if user.country == "ve" %}selected{% endif %}>🇻🇪 Venezuela</option>
+                                        <option value="vn" {% if user.country == "vn" %}selected{% endif %}>🇻🇳 Vietnam</option>
+                                        <option value="ye" {% if user.country == "ye" %}selected{% endif %}>🇾🇪 Yemen</option>
+                                        <option value="zm" {% if user.country == "zm" %}selected{% endif %}>🇿🇲 Zambia</option>
+                                        <option value="zw" {% if user.country == "zw" %}selected{% endif %}>🇿🇼 Zimbabwe</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputEmail4" class="form-label">Date of Birth</label>
+                                    <input type="date" name="dob" class="form-control setting-input" value="{{ user.dob | date:'Y-m-d' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select name="gender" id="gender" class="form-control setting-input">
+                                        <option value="">Select a gender...</option>
+                                        <option value="M" {% if user.gender == "M" %}selected{% endif %}>Male</option>
+                                        <option value="F" {% if user.gender == "F" %}selected{% endif %}>Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="instagram" class="form-label"> <i class="bi bi-instagram"></i> Instagram</label>
+                                    <div id="instagram" class="input-group setting-input">
+                                        <span class="input-group-text" id="basic-addon1">@</span>
+                                        <input type="text" name="instagram" class="form-control" value="{{ user.instagram }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="twitter" class="form-label"><i class="bi bi-twitter"></i> Twitter</label>
+                                    <div class="input-group setting-input">
+                                        <span class="input-group-text" id="basic-addon1">@</span>
+                                        <input type="text" name="twitter" class="form-control" value="{{ user.twitter }}">
+                                    </div>
+                                </div>
+                                <div class="row align-items-center">
+                                    {% if message %}
+                                        <div class="col-8 alert alert-danger-dark-green mt-3 setting-alert" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% else %}
+                                    <div class="col-8 alert alert-danger-dark-off mt-3 setting-alert" role="alert">
+                                        
+                                    </div>
+                                    {% endif %}
+                                    <div class="col-4 text-end">
+                                        <button name="type" value="profile" type="submit" class="btn btn-blue save-btn">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="chat-tab-pane" role="tabpanel" aria-labelledby="chat-tab" tabindex="0">
+                        <form class="row g-3 p-3 ps-5" method="POST" action="{% url 'settings' %}">
+                            {% csrf_token %}
+                            <div class="row my-3">
+                                <label class="form-label">Preferred Gender</label>
+                                <div class="col-2">
+                                    <input type="radio" class="btn-check" id="any" autocomplete="off" name="genderPref" value="A" {% if user.gender_pref != "F" and user.gender_pref != "M"%} checked {% endif %}>
+                                    <label class="btn btn-outline-blue" for="any">Any</label>
+                                </div>
+                                <div class="col-2">
+                                    <input type="radio" class="btn-check" id="male" autocomplete="off" name="genderPref" value="M" {% if user.gender_pref == "M"%} checked {% endif %}>
+                                    <label class="btn btn-outline-blue" for="male">Male</label>
+                                </div>
+                                <div class="col-2">
+                                    <input type="radio" class="btn-check" id="female" autocomplete="off" name="genderPref" value="F" {% if user.gender_pref == "F"%} checked {% endif %}>
+                                    <label class="btn btn-outline-blue" for="female">Female</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="form-label">Preferred Age</label>
+                                <div class="col-2">
+                                    <input type="checkbox" class="btn-check" id="same" name="agePref" value="same" {% if user.age_pref == 0 or user.age_pref == 3 or user.age_pref == 4 %} checked {% endif %} autocomplete="off">
+                                    <label class="btn btn-outline-blue" for="same">Same</label>
+                                </div>
+                                <div class="col-2">
+                                    <input type="checkbox" class="btn-check" id="older" name="agePref" value="older" {% if user.age_pref == 2 or user.age_pref == 4 or user.age_pref == 5 %} checked {% endif %} autocomplete="off">
+                                    <label class="btn btn-outline-blue" for="older">Older</label>
+                                </div>
+                                <div class="col-2">
+                                    <input type="checkbox" class="btn-check" id="younger" name="agePref" value="younger" {% if user.age_pref == 1 or user.age_pref == 3 or user.age_pref == 5 %} checked {% endif %} autocomplete="off">
+                                    <label class="btn btn-outline-blue" for="younger">Younger</label>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                {% if message %}
+                                    <div class="col-8 alert alert-danger-dark-green mt-3 setting-alert" role="alert">
+                                        {{ message }}
+                                    </div>
+                                {% else %}
+                                <div class="col-8 alert alert-danger-dark-off mt-3 setting-alert" role="alert">
+                                    
+                                </div>
+                                {% endif %}
+                                <div class="col-4 text-end">
+                                    <button name="type" value="chat" type="submit" class="btn btn-blue save-btn">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/settings.js' %}"></script> 
+{% endblock content %}

@@ -1,10 +1,9 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.shortcuts import render
+from django.http import Http404, JsonResponse
 from .models import Room
 from .random_string import generate_random_string
 from django.views import View
+from django.db.models import Q
 
 class RoomView(View):
     def get(self, request, room_name):
@@ -14,28 +13,39 @@ class RoomView(View):
             raise Http404("Room does not exist")
         if request.user not in [room.requester, room.responder]:
             raise Http404("You are not allowed to view this room")
-        return render(request, "room.html", {"room": room })
+        return render(request, "chat/room.html", {"room": room })
     
-class RequesterView(View):
+
+class GetRoom(View):
+    def get(self, request):
+        try:
+            room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
+        except Room.DoesNotExist:
+            room = None
+        if room:
+            return JsonResponse({'room_name': room.name})
+        else:
+            return JsonResponse({'room_name': None})
+        
+
+class CreateRoom(View):
     def post(self, request):
         room_name = generate_random_string()
-        try:
-            room = Room.objects.get(requester=request.user)
-        except Room.DoesNotExist:
-            room = Room(name=room_name, requester=request.user)
-            room.save()
-        return redirect(reverse('room', kwargs={'room_name': room.name}))
+        room = Room(name=room_name, requester=request.user)
+        room.save()
+        return JsonResponse({'room_name': room.name})
+    
 
-class ResponderView(View):
+class RespondRoom(View):
     def post(self, request):
         room = None
         rooms = Room.objects.all()
         for r in rooms:
-            requester_age = r.requester.age
+            requester_dob = r.requester.dob
             requester_gender = r.requester.gender
             requester_age_pref = r.requester.age_pref
             requester_gender_pref = r.requester.gender_pref
-            responder_age = request.user.age
+            responder_dob = request.user.dob
             responder_gender = request.user.gender
             responder_age_pref = request.user.age_pref
             responder_gender_pref = request.user.gender_pref
@@ -46,49 +56,63 @@ class ResponderView(View):
                 if responder_gender != requester_gender_pref:
                     continue
             if responder_age_pref:
+                date_diff = requester_dob - responder_dob
+                days_diff = date_diff.days
                 if responder_age_pref == 0:
-                    if requester_age != responder_age:
+                    if abs((requester_dob - responder_dob).days) > 365:
                         continue
                 elif responder_age_pref == 1:
-                    if requester_age >= responder_age:
+                    if days_diff >= -365:
                         continue
                 elif responder_age_pref == 2:
-                    if requester_age <= responder_age:
+                    if days_diff <= 365:
                         continue
                 elif responder_age_pref == 3:
-                    if requester_age > responder_age:
+                    if days_diff > 365:
                         continue
                 elif responder_age_pref == 4:
-                    if requester_age < responder_age:
+                    if days_diff < -365:
                         continue
                 elif responder_age_pref == 5:
-                    if requester_age == responder_age:
+                    if abs((requester_dob - responder_dob).days) < 365:
                         continue
             if requester_age_pref:
                 if requester_age_pref == 0:
-                    if responder_age != requester_age:
+                    if abs((responder_dob - requester_dob).days) > 365:
                         continue
                 elif requester_age_pref == 1:
-                    if responder_age >= requester_age:
+                    if responder_dob - requester_dob >= -365:
                         continue
                 elif requester_age_pref == 2:
-                    if responder_age <= requester_age:
+                    if responder_dob - requester_dob <= 365:
                         continue
                 elif requester_age_pref == 3:
-                    if responder_age > requester_age:
+                    if responder_dob - requester_dob > 365:
                         continue
                 elif requester_age_pref == 4:
-                    if responder_age < requester_age:
+                    if responder_dob - requester_dob < -365:
                         continue
                 elif requester_age_pref == 5:
-                    if responder_age == requester_age:
+                    if abs((responder_dob - requester_dob).days) < 365:
                         continue
             room = r
             break
         if room:
             room.responder = request.user
             room.save()
-            return redirect(reverse('room', kwargs={'room_name': room.name}))
+            return JsonResponse({'room_name': room.name})
         else:
-            return redirect('index')
+            return JsonResponse({'room_name': None})
 
+
+class CloseRoom(View):
+    def get(self, request):
+        try:
+            room = Room.objects.get(Q(requester=request.user) | Q(responder=request.user))
+        except Room.DoesNotExist:
+            room = None
+        if room:
+            room.delete()
+            return JsonResponse({'room_name': room.name})
+        else:
+            return JsonResponse({'room_name': None})

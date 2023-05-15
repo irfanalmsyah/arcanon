@@ -1,0 +1,31 @@
+<div id="nav-panel" class="col-3 px-5">
+    <div class="d-flex flex-column justify-content-between h-100">
+        <a class="btn btn-outline-blue d-flex align-items-center mb-2 {{ home_navpanel }}" href="{% url 'home' %}">
+            <i class="bi bi-house-fill"></i>
+            <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                <span>Home</span>
+            </div>
+        </a>
+        <a class="btn btn-outline-blue d-flex align-items-center mb-2 {{ top_navpanel }}" href="{% url 'top' %}">
+            <i class="bi bi-fire"></i>
+            <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                <span>Top Posts</span>
+            </div>
+        </a>
+        <div class="mt-auto mb-2">
+            <a class="btn btn-outline-blue d-flex align-items-center mb-2 {{ settings_navpanel }}" href="{% url 'settings' %}">
+                <i class="bi bi-gear-wide-connected"></i>
+                <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                    <span>Settings</span>
+                </div>
+            </a>
+            <a class="btn btn-outline-blue d-flex align-items-center mb-2 {{ logout_navpanel }}" href="{% url 'logout' %}">
+                <i class="bi bi-door-open-fill"></i>
+                <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                    <span>Logout</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+

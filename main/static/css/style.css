@@ -1,0 +1,305 @@
+.active > .page-link, .page-link.active {
+    z-index: 3;
+    --bs-pagination-active-color: #fff;
+    --bs-pagination-active-bg: #3282B8;
+    --bs-pagination-active-border-color: #3282B8;
+}
+#nav-panel {
+    height: calc(100vh - 80px);
+}
+a .post-link {
+    color: #fff;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.icon-btn {
+    padding: 0 10px 3px;
+    font-size: 22px; 
+}
+.post-time {
+    font-size: 12px;
+    color: #6c757d;
+}
+.post-title {
+    font-size: 25px;
+    font-weight: bold;
+}
+.dropdown-toggle::after {
+    display: none;
+}
+
+.btn-outline-blue {
+    color: #3282B8;
+    border-color: #3282B8;
+    --bs-btn-color: #3282B8;
+    --bs-btn-border-color: #3282B8;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #3282B8;
+    --bs-btn-hover-border-color: #3282B8;
+    --bs-btn-focus-shadow-rgb: 220,53,69;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #3282B8;
+    --bs-btn-active-border-color: #3282B8;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #3282B8;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #3282B8;
+    --bs-gradient: none;
+}
+  
+.btn-outline-blue:hover {
+    color: #fff;
+    background-color: #3282B8;
+    border-color: #3282B8;
+}
+
+.btn-outline-blue:focus,
+.btn-outline-blue.focus {
+    box-shadow: 0 0 0 0.25rem rgba(50, 130, 184, 0.5);
+}
+
+.btn-outline-blue.disabled,
+.btn-outline-blue:disabled {
+    color: #3282B8;
+    background-color: transparent;
+}
+
+.btn-outline-blue:not(:disabled):not(.disabled):active,
+.btn-outline-blue:not(:disabled):not(.disabled).active,
+.show > .btn-outline-blue.dropdown-toggle {
+    color: #fff;
+    background-color: #3282B8;
+    border-color: #3282B8;
+}
+
+.btn-outline-blue:not(:disabled):not(.disabled):active:focus,
+.btn-outline-blue:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-blue.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.25rem rgba(50, 130, 184, 0.5);
+}
+
+.btn-blue {
+    color: #fff;
+    background-color: #3282B8;
+    border-color: #3282B8;
+}
+  
+.btn-blue:hover {
+    color: #fff;
+    background-color: #2a73a5;
+    border-color: #2a73a5;
+}
+
+.btn-blue:focus,
+.btn-blue.focus {
+    box-shadow: 0 0 0 0.25rem rgba(50, 130, 184, 0.5);
+}
+
+.btn-blue.disabled,
+.btn-blue:disabled {
+    color: #fff;
+    background-color: #3282B8;
+    border-color: #3282B8;
+    opacity: 0.65;
+}
+
+.btn-blue:not(:disabled):not(.disabled):active,
+.btn-blue:not(:disabled):not(.disabled).active,
+.show > .btn-blue.dropdown-toggle {
+    color: #fff;
+    background-color: #2a73a5;
+    border-color: #2a73a5;
+}
+
+.btn-blue:not(:disabled):not(.disabled):active:focus,
+.btn-blue:not(:disabled):not(.disabled).active:focus,
+.show > .btn-blue.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.25rem rgba(50, 130, 184, 0.5);
+}
+
+
+#posts {
+    height: 86vh;
+    overflow-y: scroll;
+}
+
+.row {
+    --bs-gutter-x: unset;
+}
+.chat-bubble-left {
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    padding: 10px;
+    display: inline-block;
+    width: fit-content;
+    align-self: flex-start;
+    max-width: 80%;
+    left: 12px;
+}
+  
+.chat-bubble-left::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -12px;
+    border-top: 0px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-right: 20px solid #f5f5f5;
+}
+  
+.chat-bubble-left p {
+    color: #000;
+    font-size: 16px;
+    margin: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.chat-bubble-right {
+    background-color: #3282B8;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    padding: 10px;
+    display: inline-block;
+    width: fit-content;
+    align-self: flex-end;
+    max-width: 80%;
+    right: 12px;
+}
+
+.chat-bubble-right::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -12px;
+    border-top: 0px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 20px solid #3282B8;
+}
+
+.chat-bubble-right p {
+    color: #fff;
+    font-size: 16px;
+    margin: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#chat-panel {
+    display: flex;
+    flex-direction: column;
+    height: 74.9vh;
+    overflow-y: scroll; 
+    overflow-x: hidden;
+    padding-right: 12px;
+}
+
+.setting-input {
+    max-width: 70%;
+}
+
+.save-btn {
+    margin-right: 124px;
+}
+
+.alert.alert-danger-dark {
+    border-color: #dc3545;
+}
+
+.alert.alert-danger-dark-green {
+    border-color: #198754;
+}
+  
+.alert.alert-danger-dark hr {
+    border-top-color: #fff;
+}
+
+.alert.alert-danger-dark .alert-link {
+    color: #f8f9fa;
+}
+
+.setting-alert {
+    max-width: 85%;
+}
+
+.profile-img {
+    position: relative;
+    display: inline-block;
+}   
+  
+.profile-img-content {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    padding-top: 30%;
+    box-sizing: border-box;
+    border-radius: 50%;
+  }
+  
+.profile-img:hover .profile-img-content {
+    display: block;
+}
+  
+.profile-img input[type="file"] {
+    display: none;
+}
+
+.rules {
+    padding: 7px 0 7px 0;
+}
+
+.profile-tab {
+    color: #3282B8;
+}
+
+.profile-tab:hover {
+    color: #2a73a5;
+}
+
+.profile-tab.active {
+    color: #fff;
+    background-color: #3282B8;
+}
+
+.profile-tab.active:hover {
+    color: #fff;
+    background-color: #2a73a5;
+}
+
+.profile-tab.active:focus {
+    box-shadow: 0 0 0 0.25rem rgba(50, 130, 184, 0.5);
+}
+
+.profile-tab.active.disabled,
+.profile-tab.active:disabled {
+    color: #fff;
+    background-color: #3282B8;
+    border-color: #3282B8;
+    opacity: 0.65;
+}
+
+.profile-tab.active:not(:disabled):not(.disabled):active,
+.profile-tab.active:not(:disabled):not(.disabled).active,
+.show > .profile-tab.active.dropdown-toggle {
+    color: #3282B8;
+    background-color: transparent;
+    font-weight: bold;
+}
+
+.border-blue {
+    --bs-border-color: #3282B8
+}

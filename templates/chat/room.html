@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Chat{% endblock title %}
+{% block content %}
+    {% include 'includes/navbar.html' %}
+    <div class="row">
+        {% include 'includes/navpanel.html' %}           
+        <div class="col-6 mx-auto">
+            <div id="chat-panel" class="mx-auto">
+            </div>
+            <div class="input-group my-2 mb-3">
+                <input type="text" class="form-control" id="message-input" placeholder="Type your message here" aria-label="Type your message here" aria-describedby="button-addon2">
+                <button class="btn btn-outline-blue" type="button" id="message-send"><i class="bi bi-send"></i></button>
+            </div>
+        </div>
+        <div id="chat-buttons" class="col-3 text-center px-5">
+            <div id="end">
+                <div class="btn btn-outline-danger d-flex align-items-center mb-2">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                      <span>End Conversation</span>
+                    </div>
+                </div>
+            </div>
+            <div id="report">
+                <div class="btn btn-outline-blue d-flex align-items-center mb-2">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                      <span>Report</span>
+                    </div>
+                </div>
+            </div>
+            <div id="reveal">
+                <div class="btn btn-outline-blue d-flex align-items-center mb-2">
+                    <i class="bi bi-eye"></i>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                      <span>Reveal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ room.name|json_script:"room-name" }}
+    {{ user.username|json_script:"user" }}
+    <script src="{% static 'js/chat.js' %}"></script>
+{% endblock content %}
