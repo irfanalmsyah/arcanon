@@ -4,9 +4,16 @@
 {% block content %}
     {% include 'includes/navbar.html' %}
     <div class="row">
-        {% include 'includes/navpanel.html' with home_navpanel='active' %}        
+        {% if request.path == '/' %}
+            {% include 'includes/navpanel.html' with home_navpanel='active' %}        
+        {% elif request.path == '/top/' %}
+            {% include 'includes/navpanel.html' with top_navpanel='active' %}        
+        {% endif %}
         <div id="posts" class="col-6 mx-auto">
             {% include 'includes/inputpost.html' %}
+            {% if request.path == '/top/' %}
+                <div class="fw-bold fs-2 mb-2">Top posts</div>
+            {% endif %}
             <ul id="posts-list">
                 {% if posts %}
                     {% for post, likes, isLiked, comments in posts %}
@@ -60,43 +67,45 @@
                     {% endfor %}
                 {% endif %}
             </ul>
-            <nav class="mb-3">
-                <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                {% endif %}
-                {% for i in page_obj.paginator.page_range %}
-                    <li class="page-item"><a class="page-link
-                    {% if page_obj.number == i %}
-                        active
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="mb-3">
+                    <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
                     {% endif %}
-                    " href="?page={{ i }}">{{ i }}</a></li>
-                {% endfor %}
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                {% endif %}
-                </ul>
-            </nav>
+                    {% for i in page_obj.paginator.page_range %}
+                        <li class="page-item"><a class="page-link
+                        {% if page_obj.number == i %}
+                            active
+                        {% endif %}
+                        " href="?page={{ i }}">{{ i }}</a></li>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
         </div>
         <script src="{% static 'js/posts.js' %}"></script>
         {% include 'includes/roompanel.html' with home_navpanel='active' %}      

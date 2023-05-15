@@ -44,7 +44,7 @@ class TopPostsView(View):
         except Post.DoesNotExist:
             posts = None
         context = {'room': room, 'posts': zip(posts, posts_likes, posts_isLiked, post_comments)}
-        return render(request, "main/top.html", context)
+        return render(request, "main/index.html", context)
 
 class LoginView(View):
     def get(self, request):
