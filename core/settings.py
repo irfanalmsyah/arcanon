@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     'main',
     'chat',
     'forum',
+    'report',
     'daphne',
     'django.contrib.admin',
     'django.contrib.auth',

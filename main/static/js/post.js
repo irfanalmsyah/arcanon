@@ -1,11 +1,3 @@
-const sendAjaxRequest = (method, url, headers = {}, body = null) => {
-    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-    headers['X-CSRFToken'] = csrfToken;
-        return fetch(url, { method, headers, body })
-        .then(response => response.json())
-        .catch(error => console.error(error));
-};
-
 const commentForm = document.querySelector('#comment-form');
 commentForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -44,7 +36,7 @@ commentForm.addEventListener('submit', (event) => {
                                         <i class="bi bi-three-dots-vertical"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                        <li><a class="dropdown-item" href="#">Report</a></li>
+                                        <li><button class="dropdown-item" onclick="report('comment', ${data.id})">Report</button></li>
                                     </ul>
                                 </div>
                             </div>

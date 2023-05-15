@@ -5,6 +5,7 @@ from django.contrib import admin
 
 urlpatterns = [
     path('', include('main.urls')),
+    path('report/', include('report.urls')),
     path('chat/', include('chat.urls')),
     path('forum/', include('forum.urls')),
     path('admin/', admin.site.urls),
