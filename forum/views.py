@@ -6,6 +6,7 @@ from chat.models import Room
 from django.db.models import Count
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 class PostView(View):
     def get(self, request, post_id):
@@ -34,8 +35,6 @@ class CreatePostView(View):
         )
         return redirect('post', post_id=post.id)
 
-
-from django.http import JsonResponse
 
 class CreateCommentView(View):
     def post(self, request, post_id):
