@@ -1,0 +1,32 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg mb-3 bg-body-tertiary sticky-top bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="{% static 'img/default_user.png' %}" alt="Bootstrap" width="30">
+          </a>      
+        <a class="navbar-brand fw-bold title" href="{% url 'home' %}">arcanon</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <form class="d-flex mx-auto" role="search" action="{% url 'search' %}" method="GET">
+            <input class="form-control me-2" type="search" placeholder="Search post" aria-label="Search" name="query" required>
+            <button class="btn btn-outline-blue" type="submit"><i class="bi bi-search" ></i></button>
+        </form>
+        <ul class="navbar-nav mb-2 mb-lg-0 ms-2">
+            <li class="nav-item me-2">
+                <a class="btn btn-outline-blue icon-btn" href="{% url 'home' %}"><i class="bi bi-chat-left-text-fill"></i></a>
+            </li>
+            <li class="nav-item me-2">
+                <a class="btn btn-outline-blue icon-btn" href="{% url 'home' %}"><i class="bi bi-bell-fill"></i></a>
+            </li>
+            <li class="nav-item dropdown">
+            <a class="btn btn-outline-blue" href="{% url 'profile' %}" role="button">
+                <img src="{% if user.picture %} {{ user.picture.url }} {% else %} {% static 'img/default_user.png' %} {% endif %}" alt="User image" class="rounded-circle me-2" style="width: 24px; height: 24px;">
+                {{ user }}
+            </a>
+            </li>
+        </ul>
+        </div>
+    </div>
+</nav>

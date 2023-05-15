@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from chat.models import Room
-from forum.models import Post, Comment
+from forum.models import Post
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from .forms import CustomUserCreationForm
 from django.views import View
+from django.db.models import Count
+from django.contrib.auth.forms import PasswordChangeForm
+from django.core.paginator import Paginator
 
 class IndexView(View):
     def get(self, request):
@@ -14,95 +16,230 @@ class IndexView(View):
         except Room.DoesNotExist:
             room = None
         try:
-            # get first 10 posts
-            posts = Post.objects.all().order_by('-date_posted')[:10]
+            allposts = Post.objects.all().order_by('-date_posted')
+            paginator = Paginator(allposts, 10)
+            page_number = request.GET.get('page')
+            posts = paginator.get_page(page_number)
+            posts_likes = [post.likes.count() for post in posts]
+            posts_isLiked = [request.user in post.likes.all() for post in posts]
+            post_comments = [post.comments.count() for post in posts]
         except Post.DoesNotExist:
             posts = None
-        context = {'room': room, 'posts': posts}
-        return render(request, "index.html", context)
+        context = {'room': room, 'posts': zip(posts, posts_likes, posts_isLiked, post_comments), 'page_obj': posts}
+        return render(request, "main/index.html", context)
+    
+
+class TopPostsView(View):
+    def get(self, request):
+        try:
+            room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
+        except Room.DoesNotExist:
+            room = None
+        try:
+            # get posts with most likes count and sort by new
+            posts = Post.objects.all().annotate(like_count=Count('likes')).order_by('-like_count', '-date_posted')
+            posts_likes = [post.likes.count() for post in posts]
+            posts_isLiked = [request.user in post.likes.all() for post in posts]
+            post_comments = [post.comments.count() for post in posts]
+        except Post.DoesNotExist:
+            posts = None
+        context = {'room': room, 'posts': zip(posts, posts_likes, posts_isLiked, post_comments)}
+        return render(request, "main/top.html", context)
 
 class LoginView(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect("index")
-        return render(request, 'login.html')
+            return redirect("home")
+        return render(request, 'main/login.html')
     def post(self, request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('index')
+            return redirect('home')
         else:
             context = {'message': 'Invalid username or password.'}
-            return render(request, 'login.html', context)
+            return render(request, 'main/login.html', context)
 
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect('index')
+        return redirect('home')
 
 class RegisterView(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('index')
+            return redirect('home')
         else:
-            return render(request, 'register.html')
+            return render(request, 'main/register.html')
     def post(self, request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            # Create and save a new user
             user = form.save()
-            # Authenticate and log in the user
             login(request, user)
-            return redirect('index')
+            return redirect('home')
         else:
-            # Extract any error messages from the form and pass them to the template
             message = ''
             for error in form.errors.values():
                 message += error[0] + ' '
             context = {'message': message}
-            return render(request, 'register.html', context)
+            return render(request, 'main/register.html', context)
 
 class SettingsView(View):
     def get(self, request):
-        return render(request, 'settings.html')
+        return render(request, 'main/settings.html')
     
     def post(self, request):
-        age = request.POST['age']
-        if age == '':
-            age = None
+        if request.POST['type'] == "account":
+            request.user.email = request.POST['email']
+            request.user.phone = request.POST['phone']
+            request.user.save()
+            if request.POST['old_password'] != '':
+                form = PasswordChangeForm(request.user, request.POST)
+                if form.is_valid():
+                    form.save()
+                    message = 'Password changed successfully.'
+                    context = {'message': message}
+                    login(request, request.user)
+                    return render(request, 'main/settings.html', context)
+                else:
+                    message = ''
+                    for error in form.errors.values():
+                        message += error[0] + ' '
+                    context = {'message': message}
+                    return render(request, 'main/settings.html', context)
+        elif request.POST['type'] == "profile":
+            if request.user.name != '':
+                request.user.name = request.POST['name']
+            if request.user.country != '':
+                request.user.country = request.POST['country']
+            if request.user.dob != '':
+                request.user.dob = request.POST['dob']
+            if request.user.gender != '':
+                request.user.gender = request.POST['gender']
+            if request.user.instagram != '':
+                request.user.instagram = request.POST['instagram']
+            if request.user.twitter != '':
+                request.user.twitter = request.POST['twitter']
+            request.user.save()
+            message = 'Profile updated successfully.'
+            context = {'message': message}
+            return render(request, 'main/settings.html', context)
+        elif request.POST['type'] == "chat":
+            try:
+                age_pref_list = request.POST.getlist('agePref')
+            except:
+                age_pref_list = None
+            
+            if age_pref_list == ["same"]:
+                age_pref = 0
+            elif age_pref_list == ["younger"]:
+                age_pref = 1
+            elif age_pref_list == ["older"]:
+                age_pref = 2
+            elif age_pref_list == ["same", "younger"]:
+                age_pref = 3
+            elif age_pref_list == ["same", "older"]:
+                age_pref = 4
+            elif age_pref_list == ["older", "younger"]:
+                age_pref = 5
+            else:
+                age_pref = None
+            
+            gender_pref = request.POST['genderPref']
+            if gender_pref == 'A':
+                gender_pref = None
+            request.user.age_pref = age_pref
+            request.user.gender_pref = gender_pref
+            request.user.save()
+            message = 'Chat preferences updated successfully.'
+            context = {'message': message}
+            return render(request, 'main/settings.html', context) 
+        return render(request, 'main/settings.html')
+    
+
+class ProfileView(View):
+    def get(self, request):
         try:
-            gender = request.POST['gender']
-        except:
-            gender = None
-        
+            room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
+        except Room.DoesNotExist:
+            room = None
         try:
-            age_pref_list = request.POST.getlist('agePref')
-        except:
-            age_pref_list = None
-        
-        if age_pref_list == ["same"]:
-            age_pref = 0
-        elif age_pref_list == ["younger"]:
-            age_pref = 1
-        elif age_pref_list == ["older"]:
-            age_pref = 2
-        elif age_pref_list == ["same", "younger"]:
-            age_pref = 3
-        elif age_pref_list == ["same", "older"]:
-            age_pref = 4
-        elif age_pref_list == ["older", "younger"]:
-            age_pref = 5
-        else:
-            age_pref = None
-        
-        gender_pref = request.POST['genderPref']
-        if gender_pref == 'A':
-            gender_pref = None
-        request.user.age = age
-        request.user.gender = gender
-        request.user.age_pref = age_pref
-        request.user.gender_pref = gender_pref
-        request.user.save()
-        return render(request, 'settings.html')
+            allposts = Post.objects.filter(Q(author=request.user)).annotate(like_count=Count('likes')).order_by('-date_posted')
+            posts_count = allposts.count()
+            posts_likes_count = sum([post.likes.count() for post in allposts])
+            paginator = Paginator(allposts, 10)
+            page_number = request.GET.get('page')
+            posts = paginator.get_page(page_number)
+            post_likes = [post.likes.count() for post in posts]
+            post_isLiked = [request.user in post.likes.all() for post in posts]
+            post_comments = [post.comments.count() for post in posts]
+        except Post.DoesNotExist:
+            posts = None
+        context = {
+            'room': room,
+            'posts': zip(posts, post_likes, post_isLiked, post_comments),
+            'posts_count': posts_count,
+            'posts_likes_count': posts_likes_count,
+            'page_obj': posts,
+        }
+        return render(request, "main/profile.html", context)
+    
+
+class ProfileLikeView(View):
+    def get(self, request):
+        try:
+            room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
+        except Room.DoesNotExist:
+            room = None
+        try:
+            allposts = Post.objects.filter(Q(author=request.user)).annotate(like_count=Count('likes')).order_by('-date_posted')
+            posts_count = allposts.count()
+            posts_likes_count = sum([post.likes.count() for post in allposts])
+            allposts = Post.objects.filter(likes=request.user).annotate(like_count=Count('likes')).order_by('-date_posted')
+            paginator = Paginator(allposts, 10)
+            page_number = request.GET.get('page')
+            posts = paginator.get_page(page_number)
+            post_likes = [post.likes.count() for post in posts]
+            post_isLiked = [request.user in post.likes.all() for post in posts]
+            post_comments = [post.comments.count() for post in posts]
+        except Post.DoesNotExist:
+            posts = None
+        context = {
+            'room': room,
+            'posts': zip(posts, post_likes, post_isLiked, post_comments),
+            'posts_count': posts_count,
+            'posts_likes_count': posts_likes_count,
+            'page_obj': posts,
+        }
+        return render(request, "main/profile.html", context)
+
+
+class ProfileCommentView(View):
+    def get(self, request):
+        try:
+            room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
+        except Room.DoesNotExist:
+            room = None
+        try:
+            allposts = Post.objects.filter(Q(author=request.user)).annotate(like_count=Count('likes')).order_by('-date_posted')
+            posts_count = allposts.count()
+            posts_likes_count = sum([post.likes.count() for post in allposts])
+            allposts = Post.objects.filter(comments__author=request.user).annotate(like_count=Count('likes')).order_by('-date_posted')
+            paginator = Paginator(allposts, 10)
+            page_number = request.GET.get('page')
+            posts = paginator.get_page(page_number)
+            post_likes = [post.likes.count() for post in posts]
+            post_isLiked = [request.user in post.likes.all() for post in posts]
+            post_comments = [post.comments.count() for post in posts]
+        except Post.DoesNotExist:
+            posts = None
+        context = {
+            'room': room,
+            'posts': zip(posts, post_likes, post_isLiked, post_comments),
+            'posts_count': posts_count,
+            'posts_likes_count': posts_likes_count,
+            'page_obj': posts,
+        }
+        return render(request, "main/profile.html", context)
