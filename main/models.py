@@ -10,7 +10,7 @@ class User(AbstractUser):
     twitter = models.CharField(max_length=255, blank=True)
     picture = models.ImageField(upload_to='profile_pics', blank=True)
     gender = models.CharField(max_length=1, null=True, choices=[('M', 'Male'), ('F', 'Female')])
-    age_pref = models.IntegerField(blank=True, choices=[
+    age_pref = models.IntegerField(blank=True, null=True, choices=[
             (0, 'Same'),
             (1, 'Younger'),
             (2, 'Older'),
