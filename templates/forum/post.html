@@ -52,7 +52,7 @@
             <form method="POST" action="{% url 'create_comment' post.id %}" id="comment-form">
                 {% csrf_token %}
                 <div class="input-group mb-3">
-                    <input type="text" name="content" class="form-control" id="message-input" placeholder="Give your thoughts about the post anonimously...">
+                    <input type="text" name="content" class="form-control" id="message-input" placeholder="Give your thoughts about the post anonimously..."required>
                     <button type="submit" class="btn btn-outline-blue" type="button" id="message-send"><i class="bi bi-send"></i></button>
                 </div>
             </form>

@@ -3,8 +3,13 @@ commentForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const url = event.target.action;
     const method = 'POST';
-    const body = new FormData(event.target);
-    sendAjaxRequest(method, url, {}, body)
+    const content = document.querySelector('#message-input').value;
+    const body = `content=${encodeURIComponent(content)}`
+    const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    sendAjaxRequest(method, url, headers, body)
         .then(data => {
         // Add the new comment to the comments list
         const commentsList = document.querySelector('#comments-list');
