@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Edit your post | {% endblock title %}
+{% block content %}
+    {% include 'includes/navbar.html' %}
+    <div class="row">
+        {% include 'includes/navpanel.html' %}        
+        <div id="posts" class="col-6 mx-auto">
+            <div class="fw-semibold fs-2">Edit your post</div>
+                <form action="{% url 'edit_post' post.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" class="form-control mt-2 mb-3" placeholder="Title" name="title" value={{ post.title }} disabled>
+                    <textarea class="form-control mb-3" rows="10" placeholder="Content" name="content">{{ post.content }}</textarea>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+        </div>
+        <div id="room-panel" class="col-3 px-5">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group list-group-flush text-muted" style="font-size: 0.7rem;">
+                        <li class="list-group-item rules">Remember to treat others with respect and avoid content that harms, belittles, or discriminates against individuals or groups.</li>
+                        <li class="list-group-item rules">Refrain from engaging in or promoting illegal activities.</li>
+                        <li class="list-group-item rules">Do not share personal information.</li>
+                        <li class="list-group-item rules">Avoid posting fake or duplicated content.</li>
+                        <li class="list-group-item rules">Do not promote products or services.</li>
+                        <li class="list-group-item rules">Respect the privacy, interests, and opinions of others, and maintain a polite and ethical manner of communication.</li>
+                    </ul>                        
+                </div>
+            </div>
+        </div>  
+    </div>  
+{% endblock content %}

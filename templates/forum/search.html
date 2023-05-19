@@ -56,6 +56,9 @@
                                                     <i class="bi bi-three-dots-vertical"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                                    {% if post.author == request.user %}
+                                                        <li><a class="dropdown-item" href="{% url 'edit_post' post.id %}">Edit</a></li>
+                                                    {% endif %}
                                                     <li><button class="dropdown-item" onclick="report('post', {{ post.id }})">Report</button></li>
                                                 </ul>
                                             </div>

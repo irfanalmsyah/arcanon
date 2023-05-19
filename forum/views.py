@@ -34,6 +34,21 @@ class CreatePostView(View):
             author=request.user
         )
         return redirect('post', post_id=post.id)
+    
+
+class EditPostView(View):
+    def get(self, request, post_id):
+        # get post by id
+        post = Post.objects.get(id=post_id)
+        context = {'post': post}
+        return render(request, 'forum/edit.html', context)
+    def post(self, request, post_id):
+        # get post by id
+        post = Post.objects.get(id=post_id)
+        # update post
+        post.content = request.POST['content']
+        post.save()
+        return redirect('post', post_id=post.id)
 
 
 class CreateCommentView(View):
