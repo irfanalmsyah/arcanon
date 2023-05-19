@@ -17,7 +17,13 @@
                                     <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
                                         <div class="row mb-2">
                                             <div class="post-time">
-                                                Posted by someone {{ post.date_posted|timesince }} ago
+                                                Posted by 
+                                                {% if post.author == request.user %}
+                                                    you
+                                                {% else %}
+                                                someone 
+                                                {% endif %}
+                                                {{ post.date_posted|timesince }} ago
                                             </div>
                                         </div>
                                         <div class="row">
