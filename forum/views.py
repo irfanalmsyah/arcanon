@@ -51,6 +51,15 @@ class EditPostView(View):
         return redirect('post', post_id=post.id)
 
 
+class DeletePostView(View):
+    def get(self, request, post_id):
+        # get post by id
+        post = Post.objects.get(id=post_id)
+        # delete post
+        post.delete()
+        return redirect('home')
+
+
 class CreateCommentView(View):
     def post(self, request, post_id):
         # get post by id
