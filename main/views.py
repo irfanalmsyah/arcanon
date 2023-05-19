@@ -110,18 +110,22 @@ class SettingsView(View):
                     context = {'message': message}
                     return render(request, 'main/settings.html', context)
         elif request.POST['type'] == "profile":
-            if request.user.name != '':
+            if request.POST['name'] != '':
                 request.user.name = request.POST['name']
-            if request.user.country != '':
+            if request.POST['country'] != '':
                 request.user.country = request.POST['country']
-            if request.user.dob != '':
+            if request.POST['dob'] != '':
                 request.user.dob = request.POST['dob']
-            if request.user.gender != '':
+            if request.POST['gender'] != '':
                 request.user.gender = request.POST['gender']
-            if request.user.instagram != '':
+            if request.POST['instagram'] != '':
                 request.user.instagram = request.POST['instagram']
-            if request.user.twitter != '':
+            if request.POST['twitter'] != '':
                 request.user.twitter = request.POST['twitter']
+            try:
+                request.user.picture = request.FILES['image']
+            except:
+                pass
             request.user.save()
             message = 'Profile updated successfully.'
             context = {'message': message}
