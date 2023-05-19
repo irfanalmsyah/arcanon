@@ -76,7 +76,7 @@ respondBtn.addEventListener('click', async function() {
             enterBtn.style.display = 'block';
             closeBtn.style.display = 'block';
             const enterAnchor = document.getElementById('enter-anchor');
-            enterAnchor.href = "chat/room/" + data.room_name + "/";
+            enterAnchor.href = "/chat/room/" + data.room_name + "/";
             enterAnchor.classList.remove('disabled');
         }
     } catch (error) {
