@@ -38,6 +38,16 @@
                     </div>
                 </div>
             </div>
+            <div id="reveal-card" style="display: none;">
+                <div class="card mt-2">
+                    <img id="stranger-picture" src="..." class="card-img-top" alt="...">
+                    <ul class="list-group list-group-flush">
+                        <li id="identity-first" class="list-group-item">An item</li>
+                        <li class="list-group-item"><i class="bi bi-instagram"></i> <span id="identity-second"></span></li>
+                        <li class="list-group-item"><i class="bi bi-twitter"></i> <span id="identity-third"></span></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     {{ room.name|json_script:"room-name" }}

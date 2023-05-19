@@ -5,6 +5,7 @@ class Room(models.Model):
     name = models.CharField(max_length=32, unique=True)
     requester = models.OneToOneField(User, on_delete=models.CASCADE, related_name='requester')
     responder = models.ForeignKey(User, on_delete=models.CASCADE, related_name='responder', null=True, blank=True)
+    reveal = models.BooleanField(default=False)
 
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -19,3 +19,6 @@ class User(AbstractUser):
             (5, 'Younger or Older'),
         ])
     gender_pref = models.CharField(max_length=1, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
+
+    def isComplete(self):
+        return self.name and self.country and self.instagram and self.twitter and self.picture
