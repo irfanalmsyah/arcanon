@@ -79,6 +79,25 @@ class CreateCommentView(View):
             'post_id': post_id,
         })
 
+class EditCommentView(View):
+    def post(self, request, post_id, comment_id):
+        # get comment by id
+        comment = Comment.objects.get(id=comment_id)
+        # update comment
+        comment.content = request.POST['content']
+        comment.save()
+        return redirect('post', post_id=post_id)
+
+
+class DeleteCommentView(View):
+    def get(self, request, post_id, comment_id):
+        # get comment by id
+        comment = Comment.objects.get(id=comment_id)
+        # delete comment
+        comment.delete()
+        # return JSON response with the id of the deleted comment
+        return redirect('post', post_id=post_id)
+
 class LikePostView(View):
     def post(self, request, post_id):
         # get post by id

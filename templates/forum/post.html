@@ -84,7 +84,16 @@
                                 </div>
                                 <div class="row">
                                     <div class="post-content">
+                                        <form method="POST" action="{% url 'edit_comment' post_id=post.id comment_id=comment.id %}" id="comment-form-{{comment.id}}" class="d-none">
+                                            {% csrf_token %}
+                                            <div class="input-group mb-3">
+                                                <input type="text" name="content" class="form-control" id="message-input" value="{{ comment.content }}" required>
+                                                <button type="submit" class="btn btn-outline-blue" type="button" id="message-send"><i class="bi bi-send"></i></button>
+                                            </div>
+                                        </form>
+                                        <span id="comment-content-{{ comment.id }}">
                                         {{ comment.content }}
+                                        </span>
                                     </div>
                                 </div>
                                 <hr>
@@ -105,6 +114,10 @@
                                                 <i class="bi bi-three-dots-vertical"></i>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                                {% if comment.author == request.user %}
+                                                <li><button class="dropdown-item" onclick="editComment({{ comment.id }})">Edit</button></li>
+                                                <li><a class="dropdown-item" href="{% url 'delete_comment' post_id=post.id comment_id=comment.id %}">Delete</a></li>
+                                                {% endif %}
                                                 <li><button class="dropdown-item" onclick="report('comment', {{ comment.id }})">Report</button></li>
                                             </ul>
                                         </div>

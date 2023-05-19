@@ -25,7 +25,16 @@ commentForm.addEventListener('submit', (event) => {
                         </div>
                         <div class="row">
                             <div class="post-content">
+                                <form method="POST" action="/forum/${data.post_id}/comment/${data.id}/edit/" class="d-none" id="comment-form-${data.id}">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="content" class="form-control" id="message-input" value="${data.content}">
+                                        <button type="submit" class="btn btn-outline-blue" type="button" id="message-send"><i class="bi bi-send"></i></button>
+                                    </div>
+                                </form>
+                                <span id="comment-content-${data.id}">
                                 ${data.content}
+                                </span>
                             </div>
                         </div>
                         <hr>
@@ -41,6 +50,8 @@ commentForm.addEventListener('submit', (event) => {
                                         <i class="bi bi-three-dots-vertical"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                        <li><button class="dropdown-item" onclick="editComment(${data.id})">Edit</button></li>
+                                        <li><a class="dropdown-item" href="/forum/${data.post_id}/comment/${data.id}/delete/">Delete</a></li>
                                         <li><button class="dropdown-item" onclick="report('comment', ${data.id})">Report</button></li>
                                     </ul>
                                 </div>
@@ -105,3 +116,11 @@ commentsList.addEventListener('submit', (event) => {
         });
     }
 });
+
+function editComment(id) {
+
+    const commentContent = document.querySelector(`#comment-content-${id}`);
+    const commentEditForm = document.querySelector(`#comment-form-${id}`);
+    commentContent.classList.add('d-none');
+    commentEditForm.classList.remove('d-none');
+}
