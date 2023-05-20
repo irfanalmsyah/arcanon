@@ -11,6 +11,8 @@ from django.core.paginator import Paginator
 
 class IndexView(View):
     def get(self, request):
+        if not request.user.is_authenticated:
+            return render(request, "main/landing.html")
         try:
             room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
         except Room.DoesNotExist:
