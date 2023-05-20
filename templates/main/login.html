@@ -1,12 +1,50 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Login | {% endblock title %}
 {% block content %}
-    Login
-    <form action="{% url 'login' %}" method="POST">
-        {% csrf_token %}
-        <input type="text" placeholder="Username" name="username" autocomplete="username" autocapitalize="none"  autofocus required>
-        <input type="password" placeholder="Password" name="password" autocomplete="current-password" minlength="8" required >
-        <button type="submit">Login</button>
-        No account? <a href="{% url 'register' %}">Sign Up</a>
-    </form>
+    <div class="container-fluid h-custom pt-3">
+        <div class="row d-flex justify-content-center   ">
+            <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="{% static 'img/login.png' %}"
+                class="img-fluid" alt="Sample image">
+            </div>
+            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 pt-5">
+                <div class="fw-bold title text-white text-center mt-4" style="font-size: 3rem;">
+                    arcanon
+                </div>
+                <div class="card px-3 py-2">
+                    <div class="card-body">
+                        <form action="{% url 'login' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-outline mb-4 form-floating">
+                                <input name="username" autocomplete="username" autocapitalize="none"  autofocus required type="text" id="form3Example3" class="form-control"
+                                placeholder="Enter a valid email address" />
+                                <label class="form-label" for="form3Example3">Username</label>
+                            </div>
+                    
+                            <!-- Password input -->
+                            <div class="form-outline form-floating mb-3">
+                                <input type="password" id="form3Example4" class="form-control"
+                                placeholder="Enter password"  name="password" autocomplete="current-password" minlength="8" required />
+                                <label class="form-label" for="form3Example4">Password</label>
+                            </div>
+                            <div class="text-center text-lg-end mt-4 pt-2">
+                                <button type="submit" class="btn btn-outline-blue "
+                                style="padding-left: 2.5rem; padding-right: 2.5rem;">Sign In</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="justify-content-center text-center pt-2">
+                    Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none fw-semibold fst-italic">Register here!</a>
+                </div>
+                {% if message %}
+                <div class=" alert alert-danger-dark text-center mt-2" role="alert">
+                    {{ message }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
 {% endblock content %}
