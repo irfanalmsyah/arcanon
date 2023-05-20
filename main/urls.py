@@ -10,6 +10,5 @@ urlpatterns = [
     path("settings/", login_required(views.SettingsView.as_view()), name="settings"),
     path("profile/", login_required(views.ProfileView.as_view()), name="profile"),
     path("profile/likes/", login_required(views.ProfileLikeView.as_view()), name="profile_likes"),
-    path("profile/comments/", login_required(views.ProfileCommentView.as_view()), name="profile_comments"),
     path("top/", login_required(views.TopPostsView.as_view()), name="top"),
 ]

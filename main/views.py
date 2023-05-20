@@ -220,32 +220,3 @@ class ProfileLikeView(View):
             'page_obj': posts,
         }
         return render(request, "main/profile.html", context)
-
-
-class ProfileCommentView(View):
-    def get(self, request):
-        try:
-            room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
-        except Room.DoesNotExist:
-            room = None
-        try:
-            allposts = Post.objects.filter(Q(author=request.user)).annotate(like_count=Count('likes')).order_by('-date_posted')
-            posts_count = allposts.count()
-            posts_likes_count = sum([post.likes.count() for post in allposts])
-            allposts = Post.objects.filter(comments__author=request.user).annotate(like_count=Count('likes')).order_by('-date_posted')
-            paginator = Paginator(allposts, 10)
-            page_number = request.GET.get('page')
-            posts = paginator.get_page(page_number)
-            post_likes = [post.likes.count() for post in posts]
-            post_isLiked = [request.user in post.likes.all() for post in posts]
-            post_comments = [post.comments.count() for post in posts]
-        except Post.DoesNotExist:
-            posts = None
-        context = {
-            'room': room,
-            'posts': zip(posts, post_likes, post_isLiked, post_comments),
-            'posts_count': posts_count,
-            'posts_likes_count': posts_likes_count,
-            'page_obj': posts,
-        }
-        return render(request, "main/profile.html", context)

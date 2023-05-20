@@ -36,7 +36,6 @@
                         Posts
                         <div class="border-bottom border-3 border-blue mt-1"></div>
                     </a>
-                    <a class="flex-sm-fill text-sm-center nav-link profile-tab" href="">Replies</a>
                     <a class="flex-sm-fill text-sm-center nav-link profile-tab" href="{% url 'profile_likes' %}">Likes</a>
                 </nav>
                 {% include 'includes/inputpost.html' %}
@@ -98,79 +97,6 @@
             {% elif request.path == '/profile/likes/' %}
                 <nav class="nav nav-pills flex-column flex-sm-row">
                     <a class="flex-sm-fill text-sm-center nav-link profile-tab" href="{% url 'profile' %}">Posts</a>
-                    <a class="flex-sm-fill text-sm-center nav-link profile-tab" href="{% url 'profile_comments' %}">Replies</a>
-                    <a class="flex-sm-fill text-sm-center nav-link profile-tab active" aria-current="page" >
-                        Likes
-                        <div class="border-bottom border-3 border-blue mt-1"></div>
-                    </a>
-                </nav>
-                <ul id="posts-list">
-                    {% if posts %}
-                        {% for post, likes, isLiked, comments in posts %}
-                        <li id="post-{{ post.id }}">
-                            <div class="card mb-4">
-                                <div class="card-body ps-4 pe-5">
-                                    <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
-                                        <div class="row mb-2">
-                                            <div class="post-time">
-                                                Posted by 
-                                                {% if post.author == request.user %}
-                                                    you
-                                                {% else %}
-                                                someone 
-                                                {% endif %}
-                                                {{ post.date_posted|timesince }} ago
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="post-title">
-                                                {{ post.title }}
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="post-content">
-                                                {{ post.content|truncatewords:50 }}
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="post-buttons d-flex">
-                                            <form method="POST" action="{% url 'like_post' post.id %}" class="like-form">
-                                                {% csrf_token %}
-                                                <button type="submit" id="like-button-{{ post.id }}"
-                                                {% if isLiked %}
-                                                    class="btn btn-secondary btn-sm me-2"
-                                                {% else %}
-                                                    class="btn btn-outline-secondary btn-sm me-2"
-                                                {% endif %}><i class="bi bi-hand-thumbs-up"></i> <span id="likes-count-{{ post.id }}">{{ likes }}</span> Likes</button>
-                                            </form>
-                                            <a href="{% url 'post' post.id %}" class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-chat-left"></i> {{ comments }} Comments</a>
-                                            <div class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-share"></i> Share</div>
-                                            <div class="dropdown ms-auto">
-                                                <button class="btn btn-outline-none btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots-vertical"></i>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                                    {% if post.author == request.user %}
-                                                        <li><a class="dropdown-item" href="{% url 'edit_post' post.id %}">Edit</a></li>
-                                                        <li><a class="dropdown-item" href="{% url 'delete_post' post.id %}">Delete</a></li>
-                                                    {% endif %}
-                                                    <li><button class="dropdown-item" onclick="report('post', {{ post.id }})">Report</button></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        {% endfor %}
-                    {% endif %}
-                </ul>
-            {% elif request.path == '/profile/comments' %}
-                <nav class="nav nav-pills flex-column flex-sm-row">
-                    <a class="flex-sm-fill text-sm-center nav-link profile-tab" href="{% url 'profile' %}">Posts</a>
-                    <a class="flex-sm-fill text-sm-center nav-link profile-tab" href="{% url 'profile_comments' %}">Replies</a>
                     <a class="flex-sm-fill text-sm-center nav-link profile-tab active" aria-current="page" >
                         Likes
                         <div class="border-bottom border-3 border-blue mt-1"></div>
