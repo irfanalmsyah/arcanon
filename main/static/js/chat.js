@@ -74,6 +74,9 @@ messageInputEl.addEventListener('keyup', function(event) {
 
 messageSendEl.addEventListener('click', function() {
     const message = messageInputEl.value;
+    if (message.trim() === '') {
+        return;
+    }
     chatSocket.send(JSON.stringify({
         type: 'message',
         user: user,
