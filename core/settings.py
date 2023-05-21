@@ -1,9 +1,30 @@
 from pathlib import Path
 import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+dotenv_path = join(dirname(__file__), '../.env')
+load_dotenv(dotenv_path)
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-q*^wi)88-7=8&)qmvt*u#lmq)vv)l48f$hqw(58^ue_&gs569q'
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    SECRET_KEY = '$3dv$$y93y%d$)0^tllsom%qa$ey+i0_)&2$6kbtdeh5@myh0n'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': 'database',
+        'PORT': 5432,
+    }
+}
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = True
 
