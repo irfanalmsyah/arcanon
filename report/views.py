@@ -1,9 +1,9 @@
 from .models import Report
-from main.models import User
 from chat.models import Room
 from forum.models import Post, Comment
 from django.views import View
 from django.http import JsonResponse
+
 
 class ReportView(View):
     def post(self, request):
@@ -19,6 +19,11 @@ class ReportView(View):
             post = Post.objects.get(id=id)
         elif type == 'comment':
             comment = Comment.objects.get(id=id)
-        report = Report(reportee=reportee, room=room, post=post, comment=comment)
+        report = Report(
+            reportee=reportee,
+            room=room,
+            post=post,
+            comment=comment
+        )
         report.save()
         return JsonResponse({'status': 'success'})

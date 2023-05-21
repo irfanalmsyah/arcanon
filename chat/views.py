@@ -5,6 +5,7 @@ from .random_string import generate_random_string
 from django.views import View
 from django.db.models import Q
 
+
 class RoomView(View):
     def get(self, request, room_name):
         try:
@@ -13,20 +14,22 @@ class RoomView(View):
             raise Http404("Room does not exist")
         if request.user not in [room.requester, room.responder]:
             raise Http404("You are not allowed to view this room")
-        return render(request, "chat/room.html", {"room": room })
-    
+        return render(request, "chat/room.html", {"room": room})
+
 
 class GetRoom(View):
     def get(self, request):
         try:
-            room = Room.objects.filter(Q(requester=request.user) | Q(responder=request.user)).first()
+            room = Room.objects.filter(
+                Q(requester=request.user) | Q(responder=request.user)
+            ).first()
         except Room.DoesNotExist:
             room = None
         if room:
             return JsonResponse({'room_name': room.name})
         else:
             return JsonResponse({'room_name': None})
-        
+
 
 class CreateRoom(View):
     def post(self, request):
@@ -34,7 +37,7 @@ class CreateRoom(View):
         room = Room(name=room_name, requester=request.user)
         room.save()
         return JsonResponse({'room_name': room.name})
-    
+
 
 class RespondRoom(View):
     def post(self, request):
@@ -108,7 +111,9 @@ class RespondRoom(View):
 class CloseRoom(View):
     def get(self, request):
         try:
-            room = Room.objects.get(Q(requester=request.user) | Q(responder=request.user))
+            room = Room.objects.get(
+                Q(requester=request.user) | Q(responder=request.user)
+            )
         except Room.DoesNotExist:
             room = None
         if room:
