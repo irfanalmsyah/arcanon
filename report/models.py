@@ -28,3 +28,7 @@ class Report(models.Model):
         blank=True,
         null=True
     )
+    reason = models.TextField()
+
+    def __str__(self):
+        self.reason

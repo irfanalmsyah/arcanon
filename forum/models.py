@@ -9,6 +9,9 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, related_name='post_likes')
 
+    def __str__(self):
+        return self.title
+
 
 class Comment(models.Model):
     post = models.ForeignKey(
@@ -20,3 +23,6 @@ class Comment(models.Model):
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='comment_likes')
+
+    def __str__(self):
+        return self.content
