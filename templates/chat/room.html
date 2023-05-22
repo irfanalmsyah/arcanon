@@ -23,13 +23,14 @@
                 </div>
             </div>
             <div id="report">
-                <div class="btn btn-outline-blue d-flex align-items-center mb-2">
+                <div class="btn btn-outline-blue d-flex align-items-center mb-2" data-bs-toggle="modal" data-bs-target="#reportRoomModal">
                     <i class="bi bi-exclamation-circle"></i>
                     <div class="flex-grow-1 d-flex align-items-center justify-content-center">
                       <span>Report</span>
                     </div>
                 </div>
             </div>
+            
             <div id="reveal">
                 <div class="btn btn-outline-blue d-flex align-items-center mb-2">
                     <i class="bi bi-eye"></i>
@@ -50,6 +51,25 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="reportRoomModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Report</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" id="report-input" placeholder="Please provide the reason for the report">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="report-toast-trigger btn btn-blue" onclick="report('room', '{{ room.name }}', document.getElementById('report-input').value)" type="button" class="btn btn-blue" data-bs-dismiss="modal">Report</button>
+                </div>
+            </div>
+        </div>
+    </div>   
     {{ room.name|json_script:"room-name" }}
     {{ user.username|json_script:"user" }}
     <script src="{% static 'js/chat.js' %}"></script>

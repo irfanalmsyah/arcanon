@@ -5,16 +5,31 @@ commentForm.addEventListener('submit', (event) => {
     const method = 'POST';
     const content = document.querySelector('#message-input').value;
     const body = `content=${encodeURIComponent(content)}`
-    const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-    };
 
-    sendAjaxRequest(method, url, headers, body)
+    sendAjaxRequest(method, url, body)
         .then(data => {
         // Add the new comment to the comments list
         const commentsList = document.querySelector('#comments-list');
         const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
         const newComment = `
+            <div class="modal fade" id="reportCommentModal-${data.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Report</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+                            <input type="text" class="form-control" id="report-input-${data.id}" placeholder="Please provide the reason for the report">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button class="report-toast-trigger btn btn-blue" onclick="report('comment', '${data.id}', document.getElementById('report-input-${data.id}').value)" type="button" class="btn btn-blue" data-bs-dismiss="modal">Report</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <li id="comment-${data.id}">
                 <div class="card mb-4">
                     <div class="card-body ps-4 pe-5">
@@ -52,7 +67,7 @@ commentForm.addEventListener('submit', (event) => {
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                                         <li><button class="dropdown-item" onclick="editComment(${data.id})">Edit</button></li>
                                         <li><a class="dropdown-item" href="/forum/${data.post_id}/comment/${data.id}/delete/">Delete</a></li>
-                                        <li><button class="dropdown-item" onclick="report('comment', ${data.id})">Report</button></li>
+                                        <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reportCommentModal-${data.id}">Report</button></li>
                                     </ul>
                                 </div>
                             </div>
@@ -67,6 +82,7 @@ commentForm.addEventListener('submit', (event) => {
         commentsCountElement.innerText = currentCount + 1;
         // Reset the comment form
         event.target.reset();
+        reportToastTrigger = document.querySelectorAll(".report-toast-trigger");
         });
 });
 

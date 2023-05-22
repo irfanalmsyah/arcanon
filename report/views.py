@@ -10,11 +10,12 @@ class ReportView(View):
         reportee = request.user
         type = request.POST.get('type')
         id = request.POST.get('id')
+        reason = request.POST.get('reason')
         room = None
         post = None
         comment = None
         if type == 'room':
-            room = Room.objects.get(id=id)
+            room = Room.objects.get(name=id)
         elif type == 'post':
             post = Post.objects.get(id=id)
         elif type == 'comment':
@@ -23,7 +24,8 @@ class ReportView(View):
             reportee=reportee,
             room=room,
             post=post,
-            comment=comment
+            comment=comment,
+            reason=reason
         )
         report.save()
         return JsonResponse({'status': 'success'})
