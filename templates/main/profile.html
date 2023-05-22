@@ -42,6 +42,20 @@
                 <ul id="posts-list">
                     {% if posts %}
                         {% for post, likes, isLiked, comments in posts %}
+                        <div class="modal fade" id="shareModal-{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Share to other social media</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}{% url 'post' post.id %}" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}{% url 'post' post.id %}&text={{ post.title }}" target="_blank" rel="noopener noreferrer" class="btn btn-info text-white"><i class="bi bi-twitter"></i></a>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="modal fade" id="reportPostModal-{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
@@ -93,7 +107,7 @@
                                                 {% endif %}><i class="bi bi-hand-thumbs-up"></i> <span id="likes-count-{{ post.id }}">{{ likes }}</span> Likes</button>
                                             </form>
                                             <a href="{% url 'post' post.id %}" class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-chat-left"></i> {{ comments }} Comments</a>
-                                            <div class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-share"></i> Share</div>
+                                            <div class="btn btn-outline-secondary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#shareModal-{{ post.id }}"><i class="bi bi-share"></i> Share</div>
                                             <div class="dropdown ms-auto">
                                                 <button class="btn btn-outline-none btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <i class="bi bi-three-dots-vertical"></i>
@@ -123,6 +137,20 @@
                 <ul id="posts-list">
                     {% if posts %}
                         {% for post, likes, isLiked, comments in posts %}
+                        <div class="modal fade" id="shareModal-{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Share to other social media</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}{% url 'post' post.id %}" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}{% url 'post' post.id %}&text={{ post.title }}" target="_blank" rel="noopener noreferrer" class="btn btn-info text-white"><i class="bi bi-twitter"></i></a>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="modal fade" id="reportPostModal-{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
@@ -180,7 +208,7 @@
                                                 {% endif %}><i class="bi bi-hand-thumbs-up"></i> <span id="likes-count-{{ post.id }}">{{ likes }}</span> Likes</button>
                                             </form>
                                             <a href="{% url 'post' post.id %}" class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-chat-left"></i> {{ comments }} Comments</a>
-                                            <div class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-share"></i> Share</div>
+                                            <div class="btn btn-outline-secondary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#shareModal-{{ post.id }}"><i class="bi bi-share"></i> Share</div>
                                             <div class="dropdown ms-auto">
                                                 <button class="btn btn-outline-none btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <i class="bi bi-three-dots-vertical"></i>
