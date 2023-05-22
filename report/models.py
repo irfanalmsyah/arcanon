@@ -31,4 +31,4 @@ class Report(models.Model):
     reason = models.TextField()
 
     def __str__(self):
-        self.reason
+        return self.reason

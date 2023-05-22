@@ -19,7 +19,7 @@ class Room(models.Model):
     reveal = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name + ' - ' + self.requester + ' - ' + self.responder
+        return self.name
 
 
 class Message(models.Model):
@@ -29,4 +29,4 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user + ' - ' + self.message
+        return str(self.user) + ' - ' + self.message
