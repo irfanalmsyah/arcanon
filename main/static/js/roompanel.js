@@ -3,6 +3,7 @@ const respondBtn = document.getElementById('respond');
 const enterBtn = document.getElementById('enter');
 const closeBtn = document.getElementById('close');
 const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+const toast = document.getElementById('roomToast')
 const xhr = new XMLHttpRequest();
 (async () => {
     try {
@@ -65,9 +66,6 @@ respondBtn.addEventListener('click', async function() {
           'X-CSRFToken': csrfToken
         },
         });
-        if (!response.ok) {
-            throw new Error('Request failed');
-        }
         const data = await response.json();
 
         if (data.room_name) {
@@ -78,6 +76,9 @@ respondBtn.addEventListener('click', async function() {
             const enterAnchor = document.getElementById('enter-anchor');
             enterAnchor.href = "/chat/room/" + data.room_name + "/";
             enterAnchor.classList.remove('disabled');
+        } else {
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast)
+            toastBootstrap.show()
         }
     } catch (error) {
       console.error(error);

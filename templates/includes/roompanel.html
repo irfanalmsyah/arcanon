@@ -36,5 +36,12 @@
         </a>
     </div>
 </div>
+<div class="toast-container position-fixed top-50 start-50 translate-middle-x p-3">
+    <div id="roomToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body">
+            No room found. You can try to request one!
+        </div>
+    </div>
+  </div>    
 {% load static %}
 <script src="{% static 'js/roompanel.js' %}"></script>
