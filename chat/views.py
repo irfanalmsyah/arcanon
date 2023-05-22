@@ -58,46 +58,36 @@ class RespondRoom(View):
             if requester_gender_pref:
                 if responder_gender != requester_gender_pref:
                     continue
-            if responder_age_pref:
+            if responder_age_pref is not None:
                 date_diff = requester_dob - responder_dob
                 days_diff = date_diff.days
-                if responder_age_pref == 0:
-                    if abs((requester_dob - responder_dob).days) > 365:
-                        continue
-                elif responder_age_pref == 1:
-                    if days_diff >= -365:
-                        continue
-                elif responder_age_pref == 2:
-                    if days_diff <= 365:
-                        continue
-                elif responder_age_pref == 3:
-                    if days_diff > 365:
-                        continue
-                elif responder_age_pref == 4:
-                    if days_diff < -365:
-                        continue
-                elif responder_age_pref == 5:
-                    if abs((requester_dob - responder_dob).days) < 365:
-                        continue
-            if requester_age_pref:
-                if requester_age_pref == 0:
-                    if abs((responder_dob - requester_dob).days) > 365:
-                        continue
-                elif requester_age_pref == 1:
-                    if responder_dob - requester_dob >= -365:
-                        continue
-                elif requester_age_pref == 2:
-                    if responder_dob - requester_dob <= 365:
-                        continue
-                elif requester_age_pref == 3:
-                    if responder_dob - requester_dob > 365:
-                        continue
-                elif requester_age_pref == 4:
-                    if responder_dob - requester_dob < -365:
-                        continue
-                elif requester_age_pref == 5:
-                    if abs((responder_dob - requester_dob).days) < 365:
-                        continue
+                if responder_age_pref == 0 and (days_diff > 365 or days_diff < -365):
+                    continue
+                elif responder_age_pref == 1 and days_diff <= 365:
+                    continue
+                elif responder_age_pref == 2 and days_diff >= -365:
+                    continue
+                elif responder_age_pref == 3 and days_diff <= -365:
+                    continue
+                elif responder_age_pref == 4 and days_diff >= 365:
+                    continue
+                elif responder_age_pref == 5 and (days_diff >= 365 or days_diff <= -365):
+                    continue
+            if requester_age_pref is not None:
+                date_diff = responder_dob - requester_dob
+                days_diff = date_diff.days
+                if requester_age_pref == 0 and (days_diff > 365 or days_diff < -365):
+                    continue
+                elif requester_age_pref == 1 and days_diff <= 365:
+                    continue
+                elif requester_age_pref == 2 and days_diff >= -365:
+                    continue
+                elif requester_age_pref == 3 and days_diff <= -365:
+                    continue
+                elif requester_age_pref == 4 and days_diff >= 365:
+                    continue
+                elif requester_age_pref == 5 and (days_diff >= 365 or days_diff <= -365):
+                    continue
             room = r
             break
         if room:
