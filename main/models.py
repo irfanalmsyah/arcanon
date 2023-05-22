@@ -12,7 +12,7 @@ class User(AbstractUser):
     picture = models.ImageField(upload_to='profile_pics', blank=True)
     gender = models.CharField(
         max_length=1,
-        null=True,
+        blank=True,
         choices=[('M', 'Male'), ('F', 'Female')]
     )
     age_pref = models.IntegerField(blank=True, null=True, choices=[
