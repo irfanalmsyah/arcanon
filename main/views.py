@@ -112,6 +112,16 @@ class RegisterView(View):
 
 class SettingsView(View):
     def get(self, request):
+        param = request.GET.get('success')
+        context = None
+        if param == 'chat':
+            message = 'Chat preferences updated successfully.'
+            context = {'message': message}
+        elif param == 'profile':
+            message = 'Profile updated successfully.'
+            context = {'message': message}
+        if context:
+            return render(request, 'main/settings.html', context)
         return render(request, 'main/settings.html')
 
     def post(self, request):
@@ -134,26 +144,19 @@ class SettingsView(View):
                     context = {'message': message}
                     return render(request, 'main/settings.html', context)
         elif request.POST['type'] == "profile":
-            if request.POST['name'] != '':
-                request.user.name = request.POST['name']
-            if request.POST['country'] != '':
-                request.user.country = request.POST['country']
+            request.user.name = request.POST['name']
+            request.user.country = request.POST['country']
             if request.POST['dob'] != '':
                 request.user.dob = request.POST['dob']
-            if request.POST['gender'] != '':
-                request.user.gender = request.POST['gender']
-            if request.POST['instagram'] != '':
-                request.user.instagram = request.POST['instagram']
-            if request.POST['twitter'] != '':
-                request.user.twitter = request.POST['twitter']
+            request.user.gender = request.POST['gender']
+            request.user.instagram = request.POST['instagram']
+            request.user.twitter = request.POST['twitter']
             try:
                 request.user.picture = request.FILES['image']
             except:
                 pass
             request.user.save()
-            message = 'Profile updated successfully.'
-            context = {'message': message}
-            return render(request, 'main/settings.html', context)
+            return redirect('/settings?success=profile#profile-tab-pane')
         elif request.POST['type'] == "chat":
             try:
                 age_pref_list = request.POST.getlist('agePref')
@@ -175,13 +178,11 @@ class SettingsView(View):
                 age_pref = None
             gender_pref = request.POST['genderPref']
             if gender_pref == 'A':
-                gender_pref = None
+                gender_pref = ""
             request.user.age_pref = age_pref
             request.user.gender_pref = gender_pref
             request.user.save()
-            message = 'Chat preferences updated successfully.'
-            context = {'message': message}
-            return render(request, 'main/settings.html', context)
+            return redirect('/settings?success=chat#chat-tab-pane')
         return render(request, 'main/settings.html')
 
 
