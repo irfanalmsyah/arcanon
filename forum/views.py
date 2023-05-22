@@ -10,6 +10,12 @@ from django.core.paginator import Paginator
 
 class PostView(View):
     def get(self, request, post_id):
+        try:
+            room = Room.objects.filter(
+                Q(requester=request.user) | Q(responder=request.user)
+            ).first()
+        except Room.DoesNotExist:
+            room = None
         # get post by id
         post = Post.objects.get(id=post_id)
         # get all comments for this post
@@ -28,7 +34,8 @@ class PostView(View):
             'post_likes': post_likes,
             'isLiked': isLiked,
             'comments': zip(comments, comment_likes, comment_isLiked),
-            'comments_count': comments_count
+            'comments_count': comments_count,
+            'room': room,
         }
         return render(request, 'forum/post.html', context)
 
