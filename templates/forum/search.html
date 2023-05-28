@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}{{ query }} - Search results | {% endblock title %}
 {% block content %}
     {% include 'includes/navbar.html' %}
@@ -109,6 +110,7 @@
                 </ul>
             </nav>
         </div>
-        {% include 'includes/roompanel.html' with home_navpanel='active' %}      
+        {% include 'includes/roompanel.html' with home_navpanel='active' %}
+        <script src="{% static 'js/posts.js' %}"></script>
     </div>   
 {% endblock content %}
